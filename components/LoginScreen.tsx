@@ -71,7 +71,7 @@ export default function LoginScreen() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
-          {["3 Surprise Prompts", "2 Min Per Doodle", "Vote for the Best", "Top 3 Win Goodies"].map((t, i) => (
+          {["3 Surprise Prompts", "5 Min Per Doodle", "Vote for the Best", "Top 3 Win Goodies"].map((t, i) => (
             <span key={t} className={`chip ${CHIP_COLORS[i % CHIP_COLORS.length]} ${i % 2 ? "wobble-r" : "wobble-l"}`}>{t}</span>
           ))}
         </div>

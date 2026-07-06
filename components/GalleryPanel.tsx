@@ -59,8 +59,8 @@ export default function GalleryPanel({ employeeId }: { employeeId: string }) {
       {/* Header */}
       <div className="px-5 py-3 border-b-[3px] border-ink bg-white flex items-center justify-between">
         <div>
-          <h2 className="font-hand font-bold text-2xl text-crayon-pink leading-none">Gallery 🖼️</h2>
-          <p className="text-xs text-ink/50 font-body">{doodles.length} doodles · syncs every 30s</p>
+          <h2 className="font-hand font-bold text-2xl text-crayon-pink leading-none">🎨 Doodle Gallery</h2>
+          <p className="text-xs text-ink/60 font-body">Browse everyone&apos;s doodles and rate your favourites! ⭐</p>
         </div>
         <button onClick={fetchDoodles} className="chip bg-white hover:bg-crayon-yellow transition-colors">
           ↻ Refresh

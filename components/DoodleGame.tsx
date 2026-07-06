@@ -72,7 +72,7 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
   const isLast = currentTry === 3;
 
   function deadlineMs(): number {
-    if (!state?.tryStartedAt) return Date.now() + (state?.tryDurationMs ?? 120_000);
+    if (!state?.tryStartedAt) return Date.now() + (state?.tryDurationMs ?? 300_000);
     return Date.parse(state.tryStartedAt) + state.tryDurationMs - clockOffset.current;
   }
 
@@ -153,7 +153,7 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
             <h2 className="text-3xl font-hand font-bold text-crayon-purple leading-tight">{prompt}</h2>
           </div>
         </div>
-        <p className="text-ink/60 text-sm font-body max-w-xs">You have 2 minutes. The timer keeps running even if you leave — so start when ready!</p>
+        <p className="text-ink/60 text-sm font-body max-w-xs">You have 5 minutes. The timer keeps running even if you leave — so start when ready!</p>
         <button onClick={startDrawing} className="btn-primary text-lg px-10 py-4">Start Drawing →</button>
       </div>
     );

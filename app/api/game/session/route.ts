@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
 import type { GameSession } from "@prisma/client";
 
-const TRY_DURATION_MS = 120_000; // 2 minutes per try
+const TRY_DURATION_MS = 300_000; // 5 minutes per try
 
 async function buildState(session: GameSession) {
   const promptIds = [session.prompt1Id, session.prompt2Id, session.prompt3Id];

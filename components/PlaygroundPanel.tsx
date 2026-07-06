@@ -57,7 +57,7 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
 
   const stats: [string, string, string][] = [
     ["3", "Surprise Prompts", "text-crayon-purple"],
-    ["2 min", "Per Doodle", "text-crayon-blue"],
+    ["5 min", "Per Doodle", "text-crayon-blue"],
     ["1", "Submission", "text-crayon-pink"],
   ];
   return (
@@ -66,7 +66,7 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
         <div className="text-7xl animate-bounce">🖌️</div>
         <h2 className="text-4xl font-hand font-bold text-crayon-purple">Playground</h2>
         <p className="text-ink/70 font-body max-w-xs">
-          You&apos;ll get 3 surprise prompts. Draw each one in 2 minutes. Pick your best to submit!
+          You&apos;ll get 3 surprise prompts. Draw each one in 5 minutes. Pick your best to submit!
         </p>
       </div>
 
