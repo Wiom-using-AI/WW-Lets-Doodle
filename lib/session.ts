@@ -2,7 +2,8 @@ import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 
 export async function getCurrentEmployee() {
-  const employeeId = cookies().get("employee_id")?.value;
+  const cookieStore = await cookies();
+  const employeeId = cookieStore.get("employee_id")?.value;
   if (!employeeId) return null;
   return prisma.employee.findUnique({ where: { id: employeeId } });
 }

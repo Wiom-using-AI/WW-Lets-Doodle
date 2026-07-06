@@ -37,7 +37,7 @@ export async function GET() {
   });
 
   // Enrich with prompt phrases
-  const promptIds = [...new Set(doodles.map((d) => d.promptId))];
+  const promptIds = Array.from(new Set(doodles.map((d) => d.promptId)));
   const prompts = await prisma.prompt.findMany({ where: { id: { in: promptIds } } });
   const promptMap = Object.fromEntries(prompts.map((p) => [p.id, p.phrase]));
 

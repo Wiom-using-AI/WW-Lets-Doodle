@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const COLORS = ["#ffffff", "#f87171", "#fb923c", "#facc15", "#4ade80", "#60a5fa", "#a78bfa", "#f472b6", "#000000"];
 const BRUSH_SIZES = [3, 6, 12, 20];
@@ -56,15 +56,13 @@ export default function DrawingCanvas({
     onComplete(canvas.toDataURL("image/png"));
   }
 
-  function getPos(e: MouseEvent | Touch, canvas: HTMLCanvasElement) {
+  function getPos(e: { clientX: number; clientY: number }, canvas: HTMLCanvasElement) {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    const clientX = "clientX" in e ? e.clientX : e.clientX;
-    const clientY = "clientY" in e ? e.clientY : e.clientY;
     return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY,
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
     };
   }
 

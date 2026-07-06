@@ -5,7 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { getEvent } from "@/lib/session";
 
 export default async function AdminPage() {
-  const isAdmin = cookies().get("admin_auth")?.value === "true";
+  const cookieStore = await cookies();
+  const isAdmin = cookieStore.get("admin_auth")?.value === "true";
   if (!isAdmin) return <AdminLogin />;
 
   const [event, employeeCount, promptCount, doodleCount] = await Promise.all([

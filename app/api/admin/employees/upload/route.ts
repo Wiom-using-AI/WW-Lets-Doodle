@@ -3,7 +3,8 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-  if (cookies().get("admin_auth")?.value !== "true") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const cookieStore = await cookies();
+  if (cookieStore.get("admin_auth")?.value !== "true") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { csv } = await req.json();
   if (!csv) return NextResponse.json({ error: "No CSV provided." }, { status: 400 });
