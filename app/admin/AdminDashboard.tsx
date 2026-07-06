@@ -4,13 +4,24 @@ import { useRouter } from "next/navigation";
 import * as XLSX from "xlsx";
 
 type Prompt = { id: string; phrase: string; isActive: boolean };
+type Voter = { name: string; department: string; rank: number };
+type LeaderboardEntry = {
+  id: string;
+  imageData: string;
+  prompt: string;
+  submitter: { name: string; department: string };
+  points: number;
+  voteCount: number;
+  voters: Voter[];
+};
 
 export default function AdminDashboard({
-  event, stats, prompts,
+  event, stats, prompts, leaderboard,
 }: {
   event: { id: string; status: string };
   stats: { employeeCount: number; promptCount: number; doodleCount: number };
   prompts: Prompt[];
+  leaderboard: LeaderboardEntry[];
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -19,6 +30,7 @@ export default function AdminDashboard({
   const [csvMsg, setCsvMsg] = useState("");
   const [showClose, setShowClose] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   async function updateEvent(status: string) {
     setBusy(true);
@@ -138,6 +150,51 @@ export default function AdminDashboard({
             </div>
             <Btn onClick={() => updateEvent("active")} busy={busy} color="green">↩ Reopen Portal</Btn>
           </>
+        )}
+      </div>
+
+      {/* Leaderboard & votes (admin-only, always visible) */}
+      <div className="card p-5 space-y-3">
+        <h2 className="font-bold text-white/70">Leaderboard &amp; Votes ({leaderboard.length} submissions)</h2>
+        <p className="text-xs text-white/40">Ranked by points (Rank 1 = 3 pts, Rank 2 = 2, Rank 3 = 1). Click any row to see who voted.</p>
+        {leaderboard.length === 0 ? (
+          <p className="text-sm text-white/40 py-4 text-center">No submissions yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {leaderboard.map((d, i) => {
+              const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
+              const isOpen = expanded === d.id;
+              return (
+                <div key={d.id} className="bg-white/5 rounded-xl overflow-hidden">
+                  <button onClick={() => setExpanded(isOpen ? null : d.id)} className="w-full flex items-center gap-3 p-3 text-left hover:bg-white/10 transition-colors">
+                    <span className="w-8 text-center font-black text-lg shrink-0">{medal}</span>
+                    <img src={d.imageData} alt="" className="w-12 h-12 rounded-lg object-cover bg-white shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm truncate">{d.submitter.name}</div>
+                      <div className="text-xs text-white/40 truncate">{d.submitter.department} · {d.prompt}</div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-black text-purple-400">{d.points} pts</div>
+                      <div className="text-xs text-white/40">{d.voteCount} vote{d.voteCount !== 1 ? "s" : ""}</div>
+                    </div>
+                    <span className="text-white/30 text-xs shrink-0">{isOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-3 pb-3 pt-1 space-y-1 border-t border-white/5">
+                      {d.voters.length === 0 ? (
+                        <p className="text-xs text-white/40 py-1">No votes yet.</p>
+                      ) : d.voters.map((v, j) => (
+                        <div key={j} className="flex items-center justify-between text-xs py-0.5">
+                          <span className="text-white/70">{v.name} <span className="text-white/30">· {v.department}</span></span>
+                          <span className="font-mono px-2 py-0.5 rounded bg-white/10">Rank {v.rank} (+{4 - v.rank})</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 

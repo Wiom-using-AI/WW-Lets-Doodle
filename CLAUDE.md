@@ -48,16 +48,31 @@ After Railway generates a deployment URL:
 - After submit → back to split screen
 
 ## Voting
-- Open 11 AM – 6 PM
+- Open the whole time the portal is open (NOT time-windowed)
 - Rank 1/2/3 per doodle (points: rank1=3, rank2=2, rank3=1)
 - Cannot vote for own doodle (blocked at API level)
-- Vote counts hidden until 6 PM
-- After 6 PM: counts visible, leaderboard shown
+- Vote counts hidden while portal is open; revealed only when event is CLOSED (status "completed")
 
-## Event Lifecycle (one-time, not recurring)
-- setup → active (go live) → closed (6 PM) → completed (7 PM, show results)
-- After 7 PM: results/winner screen only, game locked
-- Top 3 by points win goodies, shown on portal
+## Event Lifecycle — MANUAL, status-driven (NOT time-based)
+- IMPORTANT: all server-time (getHours) logic was REMOVED. Railway runs in UTC, so
+  time checks fired at the wrong IST hour. Everything is now driven by Event.status.
+- Two effective states:
+  - open   = status "setup" or "active"  → participants draw + vote, results hidden
+  - closed = status "completed"          → portal locked, ResultsScreen shows winners
+- No auto-announcement fires on any status change (only per-user OTP DMs are ever sent).
+- Closing is accident-proof: admin must type "CLOSE" to confirm; a "Reopen Portal"
+  button instantly restores the open state (nothing is ever deleted).
+- Claude can flip status via: `DATABASE_URL="<public-url>" node scripts/event.mjs open|close`
+- Plan: portal stays open (announced via link when ready), closed manually at 6 PM on show day.
+- Top 3 by points win goodies, shown on portal after close.
+
+## Deployment (Railway) — how to deploy
+- GitHub auto-deploy webhook was unreliable. Deploy directly from local via Railway CLI:
+  - Token in C:\credentials\.env (RAILWAY_TOKEN, project-scoped, production env)
+  - `railway up -p a9705d61-a17c-451e-b993-de39939c2ecf -s WW-Lets-Doodle -e production -y --ci`
+- Builder: RAILPACK (nixpacks was broken on Railway's side). Next.js 14.2.35 (security).
+- CRITICAL env var: PORT=3000 must match the domain target port, else 502 (Next binds to PORT).
+- Live URL: https://ww-lets-doodle-production.up.railway.app
 
 ## Admin Panel (/admin)
 - Password protected (bcrypt hash in ADMIN_PASSWORD_HASH env var)
