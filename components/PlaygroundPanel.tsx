@@ -1,12 +1,38 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InstructionCards from "./InstructionCards";
 import DoodleGame from "./DoodleGame";
 
 type Employee = { id: string; name: string; department: string; email: string };
 
 export default function PlaygroundPanel({ employee }: { employee: Employee }) {
-  const [phase, setPhase] = useState<"entry" | "instructions" | "game" | "done">("entry");
+  const [phase, setPhase] = useState<"loading" | "entry" | "instructions" | "game" | "done">("loading");
+
+  // On load, resume where the employee left off (survives refresh, tab close, incognito re-login).
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/game/session"); // GET — does not create
+        const data = await res.json();
+        if (data.status === "completed" || data.stage === "done") setPhase("done");
+        else if (data.exists) setPhase("game"); // mid-game → drop straight back in
+        else setPhase("entry"); // first time
+      } catch {
+        setPhase("entry");
+      }
+    })();
+  }, []);
+
+  if (phase === "loading") {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="text-4xl animate-spin">🎨</div>
+          <p className="text-white/60">Loading your playground...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (phase === "done") {
     return (

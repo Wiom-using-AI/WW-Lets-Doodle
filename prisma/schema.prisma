@@ -28,14 +28,16 @@ model Prompt {
 }
 
 model GameSession {
-  id         String   @id @default(cuid())
-  employeeId String   @unique
-  prompt1Id  String
-  prompt2Id  String
-  prompt3Id  String
-  currentTry Int      @default(1)
-  status     String   @default("playing") // playing | completed
-  createdAt  DateTime @default(now())
+  id           String    @id @default(cuid())
+  employeeId   String    @unique
+  prompt1Id    String
+  prompt2Id    String
+  prompt3Id    String
+  currentTry   Int       @default(1)
+  status       String    @default("playing") // playing | completed
+  stage        String    @default("reveal")  // reveal | drawing | confirm | preview | done
+  tryStartedAt DateTime? // server-anchored start time of the current try's 2-min timer
+  createdAt    DateTime  @default(now())
 
   employee Employee @relation(fields: [employeeId], references: [id])
   doodles  Doodle[]
@@ -48,6 +50,7 @@ model Doodle {
   promptId    String
   imageData   String   @db.Text
   isSubmitted Boolean  @default(false)
+  finalized   Boolean  @default(false) // this try's drawing is done (time-up or Done) — locked as the attempt
   createdAt   DateTime @default(now())
 
   session GameSession @relation(fields: [sessionId], references: [id])

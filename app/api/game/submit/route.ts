@@ -22,16 +22,17 @@ export async function POST(req: NextRequest) {
 
   const promptId = tryNumber === 1 ? session.prompt1Id : tryNumber === 2 ? session.prompt2Id : session.prompt3Id;
 
-  // Save all doodle attempts, mark chosen one as submitted
+  // Mark ONLY the chosen try as the submitted one (clear any other), and complete the session.
   await prisma.$transaction([
+    prisma.doodle.updateMany({ where: { sessionId }, data: { isSubmitted: false } }),
     prisma.doodle.upsert({
       where: { sessionId_tryNumber: { sessionId, tryNumber } },
-      update: { imageData, isSubmitted: true },
-      create: { sessionId, tryNumber, promptId, imageData, isSubmitted: true },
+      update: { imageData, isSubmitted: true, finalized: true },
+      create: { sessionId, tryNumber, promptId, imageData, isSubmitted: true, finalized: true },
     }),
     prisma.gameSession.update({
       where: { id: sessionId },
-      data: { status: "completed" },
+      data: { status: "completed", stage: "done" },
     }),
   ]);
 
