@@ -2,10 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "ww-lets-doodle",
+      "name": "ww-lets-doodle-2",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "port": 3003,
+      "autoPort": false
     }
   ]
 }

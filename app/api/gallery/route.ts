@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentEmployee } from "@/lib/session";
+import { getCurrentEmployee, getEvent } from "@/lib/session";
 
 export async function GET() {
   const employee = await getCurrentEmployee();
-  const now = new Date();
-  const votingClosed = now.getHours() >= 18;
+  const event = await getEvent();
+  // Vote counts stay hidden until the admin closes the event (status "completed").
+  const votingClosed = event.status === "completed";
 
   const doodles = await prisma.doodle.findMany({
     where: { isSubmitted: true },

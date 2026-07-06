@@ -72,17 +72,6 @@ export default function DoodleGame({ employee, onComplete }: { employee: Employe
     }
   }
 
-  if (phase === "loading") {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center space-y-3">
-          <div className="text-4xl animate-spin">🎨</div>
-          <p className="text-white/60">Setting up your canvas...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex-1 flex items-center justify-center p-8 text-center">
@@ -90,6 +79,17 @@ export default function DoodleGame({ employee, onComplete }: { employee: Employe
           <div className="text-4xl">⚠️</div>
           <p className="text-red-400">{error}</p>
           <button onClick={() => window.location.reload()} className="btn-secondary">Reload</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === "loading") {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="text-4xl animate-spin">🎨</div>
+          <p className="text-white/60">Setting up your canvas...</p>
         </div>
       </div>
     );

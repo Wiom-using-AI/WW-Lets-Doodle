@@ -6,6 +6,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [name, setName] = useState("");
+  const [devMode, setDevMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -22,6 +23,7 @@ export default function LoginScreen() {
     setLoading(false);
     if (!res.ok) { setError(data.error); return; }
     setName(data.name);
+    if (data.devOtp) { setOtp(data.devOtp); setDevMode(true); }
     setStep("otp");
   }
 
@@ -80,7 +82,10 @@ export default function LoginScreen() {
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div className="space-y-1 text-center">
                 <p className="text-white/80 font-semibold">Hi {name}! 👋</p>
-                <p className="text-white/50 text-sm">Check your Slack DMs for a 6-digit code</p>
+                {devMode
+                  ? <p className="text-yellow-400 text-xs font-mono bg-yellow-400/10 rounded px-2 py-1">🛠 DEV MODE — OTP auto-filled</p>
+                  : <p className="text-white/50 text-sm">Check your Slack DMs for a 6-digit code</p>
+                }
               </div>
               <div className="space-y-1">
                 <label className="text-white/60 text-sm">Enter OTP</label>

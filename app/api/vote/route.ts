@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentEmployee } from "@/lib/session";
+import { getCurrentEmployee, getEvent } from "@/lib/session";
 
 export async function POST(req: NextRequest) {
   const employee = await getCurrentEmployee();
   if (!employee) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
 
-  const now = new Date();
-  const hour = now.getHours();
-  if (hour < 11 || hour >= 18) {
-    return NextResponse.json({ error: "Voting is only open from 11 AM to 6 PM." }, { status: 400 });
+  // Voting is open while the event is running; it closes when the admin closes the event.
+  const event = await getEvent();
+  if (event.status === "completed") {
+    return NextResponse.json({ error: "Voting has closed." }, { status: 400 });
   }
 
   const { doodleId, rank } = await req.json();

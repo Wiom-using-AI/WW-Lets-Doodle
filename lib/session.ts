@@ -14,13 +14,9 @@ export async function getEvent() {
   return event;
 }
 
-export function isEventOpen() {
-  const now = new Date();
-  const hour = now.getHours();
-  return hour >= 11 && hour < 18; // 11 AM to 6 PM
-}
-
-export function isEventClosed() {
-  const now = new Date();
-  return now.getHours() >= 19; // after 7 PM
+// Event open/closed is driven entirely by Event.status (set manually by admin),
+// NOT by server time. Railway runs in UTC, so any getHours() check fires at the
+// wrong IST hour. "active" (or "setup") = open; "completed" = closed/results.
+export function isEventClosedStatus(status: string) {
+  return status === "completed";
 }

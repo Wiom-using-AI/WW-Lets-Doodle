@@ -20,7 +20,14 @@ export async function POST(req: NextRequest) {
 
   // Find Slack user by email and send DM
   const botToken = process.env.SLACK_BOT_TOKEN;
-  if (!botToken) return NextResponse.json({ error: "Slack not configured." }, { status: 500 });
+
+  // DEV MODE: no Slack token → return OTP directly for local testing
+  if (!botToken) {
+    if (process.env.NODE_ENV !== "development") {
+      return NextResponse.json({ error: "Slack not configured." }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true, name: employee.name, devOtp: otp });
+  }
 
   // Look up Slack user by email
   const lookupRes = await fetch(`https://slack.com/api/users.lookupByEmail?email=${encodeURIComponent(email)}`, {
