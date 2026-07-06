@@ -8,11 +8,13 @@ datasource db {
 }
 
 model Employee {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   name       String
-  email      String   @unique
+  email      String    @unique
   department String
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  otpCode    String?
+  otpExpiry  DateTime?
 
   session GameSession?
   votes   Vote[]
