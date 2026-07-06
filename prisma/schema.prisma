@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id         String   @id @default(cuid())
+  name       String
+  email      String   @unique
+  department String
+  createdAt  DateTime @default(now())
+
+  session GameSession?
+  votes   Vote[]
+}
+
+model Prompt {
+  id        String   @id @default(cuid())
+  phrase    String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model GameSession {
+  id         String   @id @default(cuid())
+  employeeId String   @unique
+  prompt1Id  String
+  prompt2Id  String
+  prompt3Id  String
+  currentTry Int      @default(1)
+  status     String   @default("playing") // playing | completed
+  createdAt  DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+  doodles  Doodle[]
+}
+
+model Doodle {
+  id          String   @id @default(cuid())
+  sessionId   String
+  tryNumber   Int
+  promptId    String
+  imageData   String   @db.Text
+  isSubmitted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  session GameSession @relation(fields: [sessionId], references: [id])
+  votes   Vote[]
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  voterId   String
+  doodleId  String
+  rank      Int      // 1, 2, or 3
+  createdAt DateTime @default(now())
+
+  voter  Employee @relation(fields: [voterId], references: [id])
+  doodle Doodle   @relation(fields: [doodleId], references: [id])
+
+  @@unique([voterId, doodleId])
+  @@unique([voterId, rank])
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  status    String   @default("setup") // setup | active | closed | completed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
