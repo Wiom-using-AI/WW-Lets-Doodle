@@ -31,6 +31,10 @@ export default function AdminDashboard({
   const [showClose, setShowClose] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [bulkPrompts, setBulkPrompts] = useState("");
+  const [showReset, setShowReset] = useState(false);
+  const [resetText, setResetText] = useState("");
+  const [resetMsg, setResetMsg] = useState("");
 
   async function updateEvent(status: string) {
     setBusy(true);
@@ -53,6 +57,27 @@ export default function AdminDashboard({
   async function deletePrompt(id: string) {
     setBusy(true);
     await fetch("/api/admin/prompts", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+    router.refresh();
+    setBusy(false);
+  }
+
+  async function addBulkPrompts() {
+    const phrases = bulkPrompts.split("\n").map((p) => p.trim()).filter(Boolean);
+    if (phrases.length === 0) return;
+    setBusy(true);
+    await fetch("/api/admin/prompts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phrases }) });
+    setBulkPrompts("");
+    router.refresh();
+    setBusy(false);
+  }
+
+  async function resetData() {
+    setBusy(true);
+    const res = await fetch("/api/admin/reset", { method: "POST" });
+    const data = await res.json();
+    setResetMsg(res.ok ? `✅ Cleared ${data.doodles} doodles, ${data.votes} votes, ${data.sessions} sessions.` : `❌ ${data.error}`);
+    setShowReset(false);
+    setResetText("");
     router.refresh();
     setBusy(false);
   }
@@ -224,6 +249,20 @@ export default function AdminDashboard({
           <input value={newPrompt} onChange={(e) => setNewPrompt(e.target.value)} className="input" placeholder="Add a new prompt phrase..." onKeyDown={(e) => e.key === "Enter" && addPrompt()} />
           <button onClick={addPrompt} disabled={busy} className="btn-primary px-4 shrink-0">Add</button>
         </div>
+        <details className="text-sm">
+          <summary className="cursor-pointer text-white/50 hover:text-white/70">+ Add many at once (paste, one per line)</summary>
+          <div className="mt-2 space-y-2">
+            <textarea
+              value={bulkPrompts}
+              onChange={(e) => setBulkPrompts(e.target.value)}
+              className="input h-32 resize-none w-full text-sm"
+              placeholder={"A penguin on a desert island\nMonday morning feeling\nYour boss as a superhero"}
+            />
+            <button onClick={addBulkPrompts} disabled={busy || !bulkPrompts.trim()} className="btn-secondary text-sm">
+              Add {bulkPrompts.split("\n").map((p) => p.trim()).filter(Boolean).length || ""} prompts
+            </button>
+          </div>
+        </details>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {prompts.map((p, i) => (
             <div key={p.id} className="flex items-center gap-3 bg-white/5 rounded-lg px-3 py-2">
@@ -233,6 +272,33 @@ export default function AdminDashboard({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Danger zone — reset data before the real event */}
+      <div className="card p-5 space-y-3 border border-red-500/20">
+        <h2 className="font-bold text-red-400/80">Reset Data</h2>
+        <p className="text-xs text-white/40">
+          Deletes ALL doodles, votes, and game sessions so the event starts clean. Keeps employees and prompts. Use this before going live to wipe test data.
+        </p>
+        {resetMsg && <p className="text-sm">{resetMsg}</p>}
+        {!showReset ? (
+          <button onClick={() => { setShowReset(true); setResetMsg(""); }} disabled={busy} className="bg-white/10 hover:bg-red-700/40 border border-white/10 text-white/70 hover:text-white font-medium px-4 py-2 rounded-xl text-sm transition-colors">
+            Reset all gameplay data…
+          </button>
+        ) : (
+          <div className="space-y-3 border border-red-500/40 bg-red-500/10 rounded-xl p-4">
+            <p className="text-sm text-white/80">
+              This <b>permanently deletes</b> every doodle, vote, and session. Type <span className="font-mono font-bold text-red-300">RESET</span> to confirm.
+            </p>
+            <input value={resetText} onChange={(e) => setResetText(e.target.value)} className="input w-full" placeholder="Type RESET" />
+            <div className="flex gap-2">
+              <button onClick={() => { setShowReset(false); setResetText(""); }} className="btn-secondary flex-1">Cancel</button>
+              <button disabled={resetText !== "RESET" || busy} onClick={resetData} className="bg-red-700 hover:bg-red-600 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-xl text-sm flex-1 transition-colors">
+                Delete Everything
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

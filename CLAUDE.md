@@ -91,7 +91,21 @@ After Railway generates a deployment URL:
 
 ## Dev Notes
 - Canvas: native HTML5 Canvas API, handles mouse + touch
-- Timer: stored in localStorage per try number to survive refresh
 - Gallery: polls /api/gallery every 30 seconds
-- Vote counts hidden from API response until hour >= 18
+- Vote counts hidden from API response until event status is "completed"
 - Self-vote blocked at API level in /api/vote/route.ts
+
+## Session persistence & server-authoritative timer (anti-cheat)
+- ALL game state lives on the server (GameSession + Doodle rows), NOT localStorage.
+  On load the player resumes exactly where they left off — survives refresh, tab close,
+  and incognito/other device (after re-login, since state is keyed by employee).
+- GameSession.stage: reveal | drawing | confirm | preview | done — drives resume.
+- GameSession.tryStartedAt: server timestamp anchoring the 2-min timer. Deadline =
+  tryStartedAt + 120s. Closing/reopening the tab CANNOT pause or reset it (verified:
+  4s away → 116s remaining, not 120). "start" action is idempotent (won't re-anchor).
+- Client computes remaining from server tryStartedAt + serverNow (clock-skew adjusted).
+- Drawing autosaves to the server every 8s + on tab-hide/pagehide → strokes restored on return.
+- Doodle.finalized = that try's drawing is locked in (Done or time-up); preview shows all finalized tries.
+- API: /api/game/session — GET (read, no create), POST (create/resume), PATCH {action} where
+  action ∈ start | autosave | finalize | retry | preview. Submit stays at /api/game/submit.
+- Requires @@unique([sessionId, tryNumber]) on Doodle (upserts depend on it).

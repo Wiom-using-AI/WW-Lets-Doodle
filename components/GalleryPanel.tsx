@@ -9,6 +9,7 @@ type Doodle = {
   employee: { name: string; department: string };
   voteCount: number;
   myVoteRank: number | null;
+  isOwn: boolean;
 };
 
 export default function GalleryPanel({ employeeId }: { employeeId: string }) {
@@ -75,7 +76,7 @@ export default function GalleryPanel({ employeeId }: { employeeId: string }) {
           </div>
         ) : (
           doodles.map((d) => {
-            const isOwn = d.employee.name === employeeId; // will be compared by id via API
+            const isOwn = d.isOwn; // computed server-side against the logged-in employee
             return (
               <div key={d.id} className="card overflow-hidden">
                 {/* Employee info */}
