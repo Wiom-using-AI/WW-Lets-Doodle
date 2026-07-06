@@ -67,6 +67,15 @@ export default function GalleryPanel({ employeeId }: { employeeId: string }) {
         </button>
       </div>
 
+      {/* How-to-vote banner (always visible) */}
+      <div className="px-4 py-2.5 bg-purple-500/10 border-b border-white/10 text-xs text-white/60 leading-relaxed">
+        🗳️ <b className="text-white/80">How to vote:</b> pick your top 3 favourites — tap
+        <span className="mx-0.5">🥇</span><b>#1</b>,
+        <span className="mx-0.5">🥈</span><b>#2</b>,
+        <span className="mx-0.5">🥉</span><b>#3</b>.
+        You can&apos;t vote your own, and totals stay hidden until the winners are revealed.
+      </div>
+
       {/* Doodles */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {doodles.length === 0 ? (

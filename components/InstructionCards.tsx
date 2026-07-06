@@ -6,8 +6,8 @@ const CARDS = [
   { emoji: "⏱️", title: "The Clock", body: "You have exactly 2 minutes per doodle. The canvas locks when time is up. Draw fast, draw fun!" },
   { emoji: "🔁", title: "3 Tries", body: "After each doodle, you can retry and get a new surprise prompt — up to 3 times total. The 3rd is your last chance!" },
   { emoji: "🏆", title: "Pick Your Best", body: "After all 3 tries, preview all your doodles and pick the one you want to submit to the gallery." },
-  { emoji: "🗳️", title: "Vote!", body: "Once submitted, vote for other doodles in the gallery. Rank your top 3 — you cannot vote for your own." },
-  { emoji: "🎁", title: "Win Goodies", body: "Top 3 most voted doodles win surprise goodies! Voting closes at 6 PM, results at 7 PM. Good luck!" },
+  { emoji: "🗳️", title: "Vote!", body: "Once submitted, vote for other doodles in the gallery. Rank your top 3 — 🥇 #1, 🥈 #2, 🥉 #3 — on different doodles. You cannot vote for your own." },
+  { emoji: "🎁", title: "Win Goodies", body: "Top 3 most-voted doodles win surprise goodies! Vote counts stay hidden until the winners are revealed. Good luck!" },
 ];
 
 export default function InstructionCards({ onComplete }: { onComplete: () => void }) {
