@@ -6,7 +6,9 @@ import GalleryPanel from "./GalleryPanel";
 type Employee = { id: string; name: string; department: string; email: string };
 
 export default function SplitScreen({ employee }: { employee: Employee }) {
-  const [view, setView] = useState<"split" | "play" | "gallery">("split");
+  // Default to the playground on mobile (one panel at a time via the tab switcher);
+  // on desktop both panels always show side-by-side via md:flex.
+  const [view, setView] = useState<"split" | "play" | "gallery">("play");
 
   return (
     <div className="min-h-screen flex flex-col">
