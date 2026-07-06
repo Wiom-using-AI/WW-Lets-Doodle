@@ -1,8 +1,9 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 
-const COLORS = ["#ffffff", "#f87171", "#fb923c", "#facc15", "#4ade80", "#60a5fa", "#a78bfa", "#f472b6", "#000000"];
+const COLORS = ["#2b2b3a", "#ff5d5d", "#ff9f43", "#ffd23f", "#3ec96b", "#4d9de0", "#9b5de5", "#ff70a6", "#ffffff"];
 const BRUSH_SIZES = [3, 6, 12, 20];
+const PAPER = "#ffffff";
 
 export default function DrawingCanvas({
   prompt, tryNumber, deadlineMs, initialImage, onComplete, onAutosave,
@@ -20,7 +21,7 @@ export default function DrawingCanvas({
   const lastPos = useRef<{ x: number; y: number } | null>(null);
   const completedRef = useRef(false);
 
-  const [color, setColor] = useState("#ffffff");
+  const [color, setColor] = useState("#2b2b3a");
   const [brushSize, setBrushSize] = useState(6);
   const [isEraser, setIsEraser] = useState(false);
   const [timeLeft, setTimeLeft] = useState(() => Math.max(0, Math.ceil((deadlineMs - Date.now()) / 1000)));
@@ -63,7 +64,7 @@ export default function DrawingCanvas({
       const prev = preserve && canvas.width ? ctx.getImageData(0, 0, canvas.width, canvas.height) : null;
       canvas.width = container.clientWidth;
       canvas.height = container.clientHeight;
-      ctx.fillStyle = "#1a1a2e";
+      ctx.fillStyle = PAPER;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       if (prev) ctx.putImageData(prev, 0, 0);
     }
@@ -108,7 +109,7 @@ export default function DrawingCanvas({
     const ctx = canvasRef.current!.getContext("2d")!;
     ctx.beginPath();
     ctx.arc(x, y, (isEraser ? 20 : brushSize) / 2, 0, Math.PI * 2);
-    ctx.fillStyle = isEraser ? "#1a1a2e" : color;
+    ctx.fillStyle = isEraser ? PAPER : color;
     ctx.fill();
   }
 
@@ -118,7 +119,7 @@ export default function DrawingCanvas({
     ctx.beginPath();
     ctx.moveTo(lastPos.current.x, lastPos.current.y);
     ctx.lineTo(x, y);
-    ctx.strokeStyle = isEraser ? "#1a1a2e" : color;
+    ctx.strokeStyle = isEraser ? PAPER : color;
     ctx.lineWidth = isEraser ? 20 : brushSize;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
@@ -158,7 +159,7 @@ export default function DrawingCanvas({
   function clearCanvas() {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "#1a1a2e";
+    ctx.fillStyle = PAPER;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
@@ -166,62 +167,62 @@ export default function DrawingCanvas({
 
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
-  const timerColor = timeLeft <= 30 ? "text-red-400" : timeLeft <= 60 ? "text-yellow-400" : "text-green-400";
+  const timerColor = timeLeft <= 30 ? "text-crayon-red" : timeLeft <= 60 ? "text-crayon-orange" : "text-crayon-green";
 
   return (
-    <div className="flex-1 flex flex-col h-full">
-      <div className="flex items-center justify-between px-4 py-2 bg-black/30 border-b border-white/10">
-        <div className="text-xs text-white/50">
-          Try {tryNumber} — <span className="text-white/80 font-semibold">{prompt}</span>
+    <div className="flex-1 flex flex-col h-full bg-paper">
+      <div className="flex items-center justify-between px-4 py-2 bg-white border-b-[3px] border-ink">
+        <div className="text-sm text-ink/60 font-body">
+          Try {tryNumber} — <span className="text-ink font-bold">{prompt}</span>
         </div>
-        <div className={`font-mono font-black text-xl ${timerColor}`}>
-          {mins}:{secs.toString().padStart(2, "0")}
+        <div className={`font-hand font-bold text-2xl ${timerColor}`}>
+          ⏱ {mins}:{secs.toString().padStart(2, "0")}
         </div>
       </div>
 
-      <div ref={containerRef} className="flex-1 relative overflow-hidden bg-[#1a1a2e] cursor-crosshair">
+      <div ref={containerRef} className="flex-1 relative overflow-hidden bg-white cursor-crosshair">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ touchAction: "none" }} />
         {locked && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="text-center space-y-2">
-              <div className="text-4xl">⏰</div>
-              <p className="text-white font-bold">Time&apos;s up!</p>
+          <div className="absolute inset-0 flex items-center justify-center bg-ink/50 backdrop-blur-sm">
+            <div className="card px-6 py-4 text-center space-y-1 wobble-l">
+              <div className="text-5xl">⏰</div>
+              <p className="text-ink font-hand font-bold text-2xl">Time&apos;s up!</p>
             </div>
           </div>
         )}
       </div>
 
-      <div className="bg-black/40 border-t border-white/10 px-3 py-2 space-y-2">
-        <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="bg-white border-t-[3px] border-ink px-3 py-2.5 space-y-2.5">
+        <div className="flex items-center gap-2 flex-wrap">
           {COLORS.map((c) => (
             <button
               key={c}
               onClick={() => { setColor(c); setIsEraser(false); }}
-              className={`w-6 h-6 rounded-full border-2 transition-all ${!isEraser && color === c ? "border-white scale-125" : "border-transparent"}`}
+              className={`w-7 h-7 rounded-full border-[3px] border-ink transition-all ${!isEraser && color === c ? "scale-125 shadow-doodle-sm" : ""}`}
               style={{ backgroundColor: c }}
             />
           ))}
           <button
             onClick={() => setIsEraser(!isEraser)}
-            className={`px-2 py-0.5 rounded text-xs font-semibold transition-all ml-1 ${isEraser ? "bg-white text-black" : "bg-white/10 text-white/70"}`}
+            className={`px-3 py-1 rounded-xl text-sm font-body font-semibold border-2 border-ink transition-all ml-1 ${isEraser ? "bg-crayon-yellow text-ink shadow-doodle-sm" : "bg-white text-ink/70"}`}
           >
             Eraser
           </button>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {BRUSH_SIZES.map((s) => (
               <button
                 key={s}
                 onClick={() => setBrushSize(s)}
-                className={`rounded-full bg-white transition-all ${brushSize === s && !isEraser ? "opacity-100" : "opacity-30"}`}
-                style={{ width: s + 4, height: s + 4 }}
+                className={`rounded-full bg-ink border-2 border-ink transition-all ${brushSize === s && !isEraser ? "opacity-100 scale-110" : "opacity-30"}`}
+                style={{ width: s + 6, height: s + 6 }}
               />
             ))}
           </div>
           <div className="flex gap-2">
-            <button onClick={clearCanvas} className="btn-secondary text-xs px-3 py-1.5">Clear</button>
-            <button onClick={handleDone} disabled={locked} className="btn-primary text-xs px-3 py-1.5">Done ✓</button>
+            <button onClick={clearCanvas} className="btn-secondary text-sm px-3 py-1.5">Clear</button>
+            <button onClick={handleDone} disabled={locked} className="btn-primary text-sm px-4 py-1.5">Done ✓</button>
           </div>
         </div>
       </div>

@@ -27,8 +27,8 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center space-y-3">
-          <div className="text-4xl animate-spin">🎨</div>
-          <p className="text-white/60">Loading your playground...</p>
+          <div className="text-5xl animate-spin">🎨</div>
+          <p className="text-ink/60 font-body">Loading your playground...</p>
         </div>
       </div>
     );
@@ -37,11 +37,12 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
   if (phase === "done") {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4">
-        <div className="text-6xl">🎉</div>
-        <h2 className="text-2xl font-black text-white">Doodle Submitted!</h2>
-        <p className="text-white/60">Your doodle is now live in the gallery. Check it out on the right and vote for your favourites!</p>
-        <div className="w-16 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto" />
-        <p className="text-white/40 text-sm">Results will be announced soon after submissions close.</p>
+        <div className="text-7xl wobble-l">🎉</div>
+        <h2 className="text-4xl font-hand font-bold text-crayon-green">Doodle Submitted!</h2>
+        <div className="card p-5 max-w-xs space-y-2">
+          <p className="text-ink/80 font-body">Your doodle is now live in the gallery. Vote for your favourites on the right! 👉</p>
+        </div>
+        <p className="text-ink/50 text-sm font-body">Results will be announced soon after submissions close.</p>
       </div>
     );
   }
@@ -54,21 +55,26 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
     return <DoodleGame employee={employee} onComplete={() => setPhase("done")} />;
   }
 
+  const stats: [string, string, string][] = [
+    ["3", "Surprise Prompts", "text-crayon-purple"],
+    ["2 min", "Per Doodle", "text-crayon-blue"],
+    ["1", "Submission", "text-crayon-pink"],
+  ];
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-6">
       <div className="space-y-2">
-        <div className="text-6xl animate-bounce">🖌️</div>
-        <h2 className="text-3xl font-black text-white">Playground</h2>
-        <p className="text-white/60 max-w-xs">
+        <div className="text-7xl animate-bounce">🖌️</div>
+        <h2 className="text-4xl font-hand font-bold text-crayon-purple">Playground</h2>
+        <p className="text-ink/70 font-body max-w-xs">
           You&apos;ll get 3 surprise prompts. Draw each one in 2 minutes. Pick your best to submit!
         </p>
       </div>
 
       <div className="grid grid-cols-3 gap-3 text-center">
-        {[["3", "Surprise Prompts"], ["2 min", "Per Doodle"], ["1", "Submission"]].map(([val, label]) => (
-          <div key={label} className="card p-3 space-y-1">
-            <div className="text-2xl font-black text-purple-400">{val}</div>
-            <div className="text-xs text-white/50">{label}</div>
+        {stats.map(([val, label, color], i) => (
+          <div key={label} className={`card p-2.5 space-y-0.5 ${i % 2 ? "wobble-r" : "wobble-l"}`}>
+            <div className={`text-2xl font-hand font-bold ${color}`}>{val}</div>
+            <div className="text-[11px] leading-tight text-ink/60 font-body">{label}</div>
           </div>
         ))}
       </div>

@@ -4,21 +4,55 @@
 
 @layer base {
   body {
-    @apply bg-[#0f0f1a] text-white;
+    @apply text-ink font-body;
+    background-color: #fdf7e9;
+    /* subtle sketchbook dot-grid */
+    background-image: radial-gradient(#00000010 1.5px, transparent 1.5px);
+    background-size: 22px 22px;
+  }
+  h1, h2, h3 {
+    @apply font-hand;
   }
 }
 
 @layer components {
+  /* Inputs — white with a hand-drawn ink border */
   .input {
-    @apply w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-purple-400 transition-colors;
+    @apply w-full bg-white border-[3px] border-ink rounded-2xl px-4 py-3 text-ink placeholder-ink/40 font-body
+      focus:outline-none focus:ring-0 focus:-translate-y-0.5 transition-transform shadow-doodle-sm;
   }
+
+  /* Primary button — chunky crayon-purple sticker */
   .btn-primary {
-    @apply px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold rounded-xl transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-crayon-purple text-white font-body font-semibold
+      border-[3px] border-ink rounded-2xl shadow-doodle transition-all
+      hover:-translate-y-0.5 hover:shadow-doodle-lg active:translate-y-0.5 active:shadow-doodle-sm
+      disabled:opacity-50 disabled:translate-y-0 disabled:shadow-doodle;
   }
+
+  /* Secondary button — white sticker */
   .btn-secondary {
-    @apply px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all border border-white/20;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-ink font-body font-semibold
+      border-[3px] border-ink rounded-2xl shadow-doodle transition-all
+      hover:-translate-y-0.5 hover:shadow-doodle-lg active:translate-y-0.5 active:shadow-doodle-sm
+      disabled:opacity-50;
   }
+
+  /* Card — white paper note with ink border + sticker shadow */
   .card {
-    @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl;
+    @apply bg-white border-[3px] border-ink rounded-3xl shadow-doodle;
   }
+
+  /* Little colored chip/pill */
+  .chip {
+    @apply inline-block px-3 py-1 rounded-full border-2 border-ink font-body font-semibold text-sm text-ink shadow-doodle-sm;
+  }
+}
+
+@layer utilities {
+  .text-marker { @apply font-hand; }
+  .wobble-l { transform: rotate(-1.5deg); }
+  .wobble-r { transform: rotate(1.5deg); }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in { animation: fade-in 0.3s ease-out; }
 }

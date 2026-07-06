@@ -109,7 +109,7 @@ export default function AdminDashboard({
     <div className="min-h-screen p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-black">Admin</h1>
-        <span className="px-3 py-1 bg-white/10 rounded-full text-sm capitalize">{event.status}</span>
+        <span className="px-3 py-1 bg-black/5 rounded-full text-sm capitalize">{event.status}</span>
       </div>
 
       {/* Stats */}
@@ -118,32 +118,32 @@ export default function AdminDashboard({
           <div key={String(label)} className="card p-4 text-center space-y-1">
             <div className="text-2xl">{icon}</div>
             <div className="text-2xl font-black text-purple-400">{val}</div>
-            <div className="text-xs text-white/40">{label}</div>
+            <div className="text-xs text-ink/40">{label}</div>
           </div>
         ))}
       </div>
 
       {/* Event controls */}
       <div className="card p-5 space-y-3">
-        <h2 className="font-bold text-white/70">Event Control</h2>
+        <h2 className="font-bold text-ink/70">Event Control</h2>
         {event.status !== "completed" ? (
           <>
             <div className="flex items-center gap-2 text-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-green-400 font-semibold">Portal is OPEN</span>
-              <span className="text-white/40">— participants can draw &amp; vote</span>
+              <span className="text-ink/40">— participants can draw &amp; vote</span>
             </div>
             {!showClose ? (
               <button
                 onClick={() => setShowClose(true)}
                 disabled={busy}
-                className="bg-white/10 hover:bg-red-700/40 border border-white/10 text-white/70 hover:text-white font-medium px-4 py-2 rounded-xl text-sm transition-colors"
+                className="bg-black/5 hover:bg-red-700/40 border border-ink/15 text-ink/70 hover:text-white font-medium px-4 py-2 rounded-xl text-sm transition-colors"
               >
                 Close event…
               </button>
             ) : (
               <div className="space-y-3 border border-red-500/40 bg-red-500/10 rounded-xl p-4">
-                <p className="text-sm text-white/80">
+                <p className="text-sm text-ink/80">
                   This closes the portal for <b>everyone</b> and reveals the winners. Nothing is deleted — you can reopen anytime.
                   Type <span className="font-mono font-bold text-red-300">CLOSE</span> to confirm.
                 </p>
@@ -171,7 +171,7 @@ export default function AdminDashboard({
             <div className="flex items-center gap-2 text-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
               <span className="text-amber-400 font-semibold">Portal is CLOSED</span>
-              <span className="text-white/40">— showing results to everyone</span>
+              <span className="text-ink/40">— showing results to everyone</span>
             </div>
             <Btn onClick={() => updateEvent("active")} busy={busy} color="green">↩ Reopen Portal</Btn>
           </>
@@ -180,38 +180,38 @@ export default function AdminDashboard({
 
       {/* Leaderboard & votes (admin-only, always visible) */}
       <div className="card p-5 space-y-3">
-        <h2 className="font-bold text-white/70">Leaderboard &amp; Votes ({leaderboard.length} submissions)</h2>
-        <p className="text-xs text-white/40">Ranked by points (Rank 1 = 3 pts, Rank 2 = 2, Rank 3 = 1). Click any row to see who voted.</p>
+        <h2 className="font-bold text-ink/70">Leaderboard &amp; Votes ({leaderboard.length} submissions)</h2>
+        <p className="text-xs text-ink/40">Ranked by points (Rank 1 = 3 pts, Rank 2 = 2, Rank 3 = 1). Click any row to see who voted.</p>
         {leaderboard.length === 0 ? (
-          <p className="text-sm text-white/40 py-4 text-center">No submissions yet.</p>
+          <p className="text-sm text-ink/40 py-4 text-center">No submissions yet.</p>
         ) : (
           <div className="space-y-2">
             {leaderboard.map((d, i) => {
               const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
               const isOpen = expanded === d.id;
               return (
-                <div key={d.id} className="bg-white/5 rounded-xl overflow-hidden">
-                  <button onClick={() => setExpanded(isOpen ? null : d.id)} className="w-full flex items-center gap-3 p-3 text-left hover:bg-white/10 transition-colors">
+                <div key={d.id} className="bg-black/5 rounded-xl overflow-hidden">
+                  <button onClick={() => setExpanded(isOpen ? null : d.id)} className="w-full flex items-center gap-3 p-3 text-left hover:bg-black/5 transition-colors">
                     <span className="w-8 text-center font-black text-lg shrink-0">{medal}</span>
                     <img src={d.imageData} alt="" className="w-12 h-12 rounded-lg object-cover bg-white shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-sm truncate">{d.submitter.name}</div>
-                      <div className="text-xs text-white/40 truncate">{d.submitter.department} · {d.prompt}</div>
+                      <div className="text-xs text-ink/40 truncate">{d.submitter.department} · {d.prompt}</div>
                     </div>
                     <div className="text-right shrink-0">
                       <div className="font-black text-purple-400">{d.points} pts</div>
-                      <div className="text-xs text-white/40">{d.voteCount} vote{d.voteCount !== 1 ? "s" : ""}</div>
+                      <div className="text-xs text-ink/40">{d.voteCount} vote{d.voteCount !== 1 ? "s" : ""}</div>
                     </div>
-                    <span className="text-white/30 text-xs shrink-0">{isOpen ? "▲" : "▼"}</span>
+                    <span className="text-ink/30 text-xs shrink-0">{isOpen ? "▲" : "▼"}</span>
                   </button>
                   {isOpen && (
-                    <div className="px-3 pb-3 pt-1 space-y-1 border-t border-white/5">
+                    <div className="px-3 pb-3 pt-1 space-y-1 border-t border-ink/10">
                       {d.voters.length === 0 ? (
-                        <p className="text-xs text-white/40 py-1">No votes yet.</p>
+                        <p className="text-xs text-ink/40 py-1">No votes yet.</p>
                       ) : d.voters.map((v, j) => (
                         <div key={j} className="flex items-center justify-between text-xs py-0.5">
-                          <span className="text-white/70">{v.name} <span className="text-white/30">· {v.department}</span></span>
-                          <span className="font-mono px-2 py-0.5 rounded bg-white/10">Rank {v.rank} (+{4 - v.rank})</span>
+                          <span className="text-ink/70">{v.name} <span className="text-ink/30">· {v.department}</span></span>
+                          <span className="font-mono px-2 py-0.5 rounded bg-black/5">Rank {v.rank} (+{4 - v.rank})</span>
                         </div>
                       ))}
                     </div>
@@ -225,12 +225,12 @@ export default function AdminDashboard({
 
       {/* Employee upload */}
       <div className="card p-5 space-y-3">
-        <h2 className="font-bold text-white/70">Employee List</h2>
-        <p className="text-xs text-white/40">Upload Excel (.xlsx) or CSV file — columns required: <span className="text-white/60 font-mono">Name, Email, Department</span></p>
-        <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-white/20 rounded-xl p-6 cursor-pointer hover:border-purple-500/60 transition-colors">
+        <h2 className="font-bold text-ink/70">Employee List</h2>
+        <p className="text-xs text-ink/40">Upload Excel (.xlsx) or CSV file — columns required: <span className="text-ink/60 font-mono">Name, Email, Department</span></p>
+        <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-ink/25 rounded-xl p-6 cursor-pointer hover:border-purple-500/60 transition-colors">
           <span className="text-3xl">📂</span>
-          <span className="text-sm text-white/60">{uploadFile ? uploadFile.name : "Click to choose file"}</span>
-          <span className="text-xs text-white/30">.xlsx or .csv</span>
+          <span className="text-sm text-ink/60">{uploadFile ? uploadFile.name : "Click to choose file"}</span>
+          <span className="text-xs text-ink/30">.xlsx or .csv</span>
           <input
             type="file"
             accept=".xlsx,.xls,.csv"
@@ -244,13 +244,13 @@ export default function AdminDashboard({
 
       {/* Prompts */}
       <div className="card p-5 space-y-3">
-        <h2 className="font-bold text-white/70">Prompt Bank ({prompts.length}/30)</h2>
+        <h2 className="font-bold text-ink/70">Prompt Bank ({prompts.length}/30)</h2>
         <div className="flex gap-2">
           <input value={newPrompt} onChange={(e) => setNewPrompt(e.target.value)} className="input" placeholder="Add a new prompt phrase..." onKeyDown={(e) => e.key === "Enter" && addPrompt()} />
           <button onClick={addPrompt} disabled={busy} className="btn-primary px-4 shrink-0">Add</button>
         </div>
         <details className="text-sm">
-          <summary className="cursor-pointer text-white/50 hover:text-white/70">+ Add many at once (paste, one per line)</summary>
+          <summary className="cursor-pointer text-ink/50 hover:text-ink/70">+ Add many at once (paste, one per line)</summary>
           <div className="mt-2 space-y-2">
             <textarea
               value={bulkPrompts}
@@ -265,10 +265,10 @@ export default function AdminDashboard({
         </details>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {prompts.map((p, i) => (
-            <div key={p.id} className="flex items-center gap-3 bg-white/5 rounded-lg px-3 py-2">
-              <span className="text-white/30 text-xs font-mono w-5">{i + 1}</span>
+            <div key={p.id} className="flex items-center gap-3 bg-black/5 rounded-lg px-3 py-2">
+              <span className="text-ink/30 text-xs font-mono w-5">{i + 1}</span>
               <span className="flex-1 text-sm">{p.phrase}</span>
-              <button onClick={() => deletePrompt(p.id)} className="text-white/30 hover:text-red-400 text-xs transition-colors">✕</button>
+              <button onClick={() => deletePrompt(p.id)} className="text-ink/30 hover:text-red-400 text-xs transition-colors">✕</button>
             </div>
           ))}
         </div>
@@ -277,17 +277,17 @@ export default function AdminDashboard({
       {/* Danger zone — reset data before the real event */}
       <div className="card p-5 space-y-3 border border-red-500/20">
         <h2 className="font-bold text-red-400/80">Reset Data</h2>
-        <p className="text-xs text-white/40">
+        <p className="text-xs text-ink/40">
           Deletes ALL doodles, votes, and game sessions so the event starts clean. Keeps employees and prompts. Use this before going live to wipe test data.
         </p>
         {resetMsg && <p className="text-sm">{resetMsg}</p>}
         {!showReset ? (
-          <button onClick={() => { setShowReset(true); setResetMsg(""); }} disabled={busy} className="bg-white/10 hover:bg-red-700/40 border border-white/10 text-white/70 hover:text-white font-medium px-4 py-2 rounded-xl text-sm transition-colors">
+          <button onClick={() => { setShowReset(true); setResetMsg(""); }} disabled={busy} className="bg-black/5 hover:bg-red-700/40 border border-ink/15 text-ink/70 hover:text-white font-medium px-4 py-2 rounded-xl text-sm transition-colors">
             Reset all gameplay data…
           </button>
         ) : (
           <div className="space-y-3 border border-red-500/40 bg-red-500/10 rounded-xl p-4">
-            <p className="text-sm text-white/80">
+            <p className="text-sm text-ink/80">
               This <b>permanently deletes</b> every doodle, vote, and session. Type <span className="font-mono font-bold text-red-300">RESET</span> to confirm.
             </p>
             <input value={resetText} onChange={(e) => setResetText(e.target.value)} className="input w-full" placeholder="Type RESET" />

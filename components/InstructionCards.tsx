@@ -22,16 +22,16 @@ export default function InstructionCards({ onComplete }: { onComplete: () => voi
         {CARDS.map((_, i) => (
           <div
             key={i}
-            className={`h-1.5 rounded-full transition-all ${i === current ? "w-8 bg-purple-400" : i < current ? "w-4 bg-purple-700" : "w-4 bg-white/20"}`}
+            className={`h-2 rounded-full border-2 border-ink transition-all ${i === current ? "w-8 bg-crayon-purple" : i < current ? "w-4 bg-crayon-green" : "w-4 bg-white"}`}
           />
         ))}
       </div>
 
       {/* Card */}
-      <div className="card p-8 max-w-sm w-full text-center space-y-4 animate-fade-in">
-        <div className="text-6xl">{card.emoji}</div>
-        <h2 className="text-2xl font-black text-white">{card.title}</h2>
-        <p className="text-white/70 leading-relaxed">{card.body}</p>
+      <div className="card p-8 max-w-sm w-full text-center space-y-4 animate-fade-in wobble-l">
+        <div className="text-7xl">{card.emoji}</div>
+        <h2 className="text-3xl font-hand font-bold text-crayon-purple">{card.title}</h2>
+        <p className="text-ink/80 font-body leading-relaxed">{card.body}</p>
       </div>
 
       {/* Navigation */}
@@ -41,15 +41,12 @@ export default function InstructionCards({ onComplete }: { onComplete: () => voi
             ← Back
           </button>
         )}
-        <button
-          onClick={() => isLast ? onComplete() : setCurrent(current + 1)}
-          className="btn-primary"
-        >
+        <button onClick={() => isLast ? onComplete() : setCurrent(current + 1)} className="btn-primary text-lg">
           {isLast ? "Let's Doodle! 🎨" : "Next →"}
         </button>
       </div>
 
-      <p className="text-white/30 text-xs mt-4">{current + 1} of {CARDS.length}</p>
+      <p className="text-ink/40 text-xs mt-4 font-body">{current + 1} of {CARDS.length}</p>
     </div>
   );
 }

@@ -30,15 +30,15 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-sm w-full space-y-6">
         <div className="text-center space-y-2">
-          <div className="text-4xl">🔐</div>
-          <h1 className="text-2xl font-black">Admin Access</h1>
+          <div className="text-5xl">🔐</div>
+          <h1 className="text-3xl font-hand font-bold text-crayon-purple">Admin Access</h1>
         </div>
         <form onSubmit={handleSubmit} className="card p-6 space-y-4">
-          <div className="space-y-1">
-            <label className="text-sm text-white/50">Password</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-ink">Password</label>
             <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="input" placeholder="Admin password" />
           </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && <p className="text-crayon-red font-semibold text-sm">{error}</p>}
           <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? "Logging in…" : "Login"}
           </button>

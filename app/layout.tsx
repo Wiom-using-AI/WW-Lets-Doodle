@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import { Fredoka, Gaegu } from "next/font/google";
 import "./globals.css";
+
+const fredoka = Fredoka({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-fredoka" });
+const gaegu = Gaegu({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-gaegu" });
 
 export const metadata: Metadata = {
   title: "WW Let's Doodle",
@@ -8,8 +12,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-[#0f0f1a]">{children}</body>
+    <html lang="en" className={`${fredoka.variable} ${gaegu.variable}`}>
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }
