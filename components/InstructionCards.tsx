@@ -7,7 +7,7 @@ const CARDS = [
   { emoji: "🔁", title: "3 Tries", body: "After each doodle, you can retry and get a new surprise prompt — up to 3 times total. The 3rd is your last chance!" },
   { emoji: "🏆", title: "Pick Your Best", body: "After all 3 tries, preview all your doodles and pick the one you want to submit to the gallery." },
   { emoji: "🗳️", title: "Vote!", body: "Once submitted, vote for other doodles in the gallery. Rank your top 3 — 🥇 #1, 🥈 #2, 🥉 #3 — on different doodles. You cannot vote for your own." },
-  { emoji: "🎁", title: "Win Goodies", body: "Top 3 most-voted doodles win surprise goodies! Vote counts stay hidden until the winners are revealed. Good luck!" },
+  { emoji: "🎁", title: "Win Goodies", body: "Top 3 most-voted doodles win surprise goodies! Vote counts stay hidden until then — results will be announced soon after submissions close. Good luck!" },
 ];
 
 export default function InstructionCards({ onComplete }: { onComplete: () => void }) {

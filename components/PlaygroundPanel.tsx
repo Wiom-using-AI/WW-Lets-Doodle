@@ -41,7 +41,7 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
         <h2 className="text-2xl font-black text-white">Doodle Submitted!</h2>
         <p className="text-white/60">Your doodle is now live in the gallery. Check it out on the right and vote for your favourites!</p>
         <div className="w-16 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto" />
-        <p className="text-white/40 text-sm">Voting is open until 6 PM</p>
+        <p className="text-white/40 text-sm">Results will be announced soon after submissions close.</p>
       </div>
     );
   }
