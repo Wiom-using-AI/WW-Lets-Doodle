@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   // Save all doodle attempts, mark chosen one as submitted
   await prisma.$transaction([
     prisma.doodle.upsert({
-      where: { sessionId_tryNumber: { sessionId, tryNumber } } as never,
+      where: { sessionId_tryNumber: { sessionId, tryNumber } },
       update: { imageData, isSubmitted: true },
       create: { sessionId, tryNumber, promptId, imageData, isSubmitted: true },
     }),

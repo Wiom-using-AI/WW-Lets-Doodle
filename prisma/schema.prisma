@@ -52,6 +52,8 @@ model Doodle {
 
   session GameSession @relation(fields: [sessionId], references: [id])
   votes   Vote[]
+
+  @@unique([sessionId, tryNumber])
 }
 
 model Vote {
