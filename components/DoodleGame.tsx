@@ -187,10 +187,12 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
           Prompt: <span className="text-ink font-bold">{prompt}</span>
         </p>
         <div className="flex gap-3 w-full max-w-xs">
-          {!isLast && <button onClick={handleRetry} className="btn-secondary flex-1">🔁 Try another</button>}
-          <button onClick={handleKeep} className="btn-primary flex-1">{isLast ? "Preview All →" : "Keep & Pick →"}</button>
+          {!isLast && <button onClick={handleRetry} className="btn-secondary flex-1">🎲 New prompt</button>}
+          <button onClick={handleKeep} className="btn-primary flex-1">{isLast ? "Finish & pick →" : "I'm done →"}</button>
         </div>
-        {!isLast && <p className="text-ink/40 text-xs font-body">{3 - currentTry} more prompt{3 - currentTry !== 1 ? "s" : ""} available</p>}
+        {!isLast
+          ? <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">This doodle is saved ✅ — try {3 - currentTry} more prompt{3 - currentTry !== 1 ? "s" : ""} for a better shot, or finish to pick your favourite.</p>
+          : <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">That was your last prompt! Finish to pick the doodle you want to submit.</p>}
       </div>
     );
   }
