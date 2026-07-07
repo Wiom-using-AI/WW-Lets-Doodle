@@ -65,17 +65,17 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
     <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-6">
       <div className="space-y-2">
         <div className="text-7xl animate-bounce">🖌️</div>
-        <h2 className="text-4xl font-hand font-bold text-crayon-purple">Playground</h2>
+        <h2 className="text-4xl sm:text-5xl font-hand font-bold text-crayon-purple">Enter the Playground!</h2>
         <p className="text-ink/80 font-body font-semibold text-lg max-w-sm">
           You&apos;ll get 3 surprise prompts. Draw each one in 5 minutes. Pick your best to submit!
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 text-center">
+      <div className="grid grid-cols-3 gap-4 text-center">
         {stats.map(([val, label, color], i) => (
-          <div key={label} className={`card p-3 space-y-0.5 ${i % 2 ? "wobble-r" : "wobble-l"}`}>
-            <div className={`text-3xl font-hand font-bold ${color}`}>{val}</div>
-            <div className="text-xs leading-tight text-ink/70 font-body font-semibold">{label}</div>
+          <div key={label} className="card p-5 space-y-1 animate-sway" style={{ animationDelay: `${i * 0.6}s` }}>
+            <div className={`text-4xl sm:text-5xl font-hand font-bold ${color}`}>{val}</div>
+            <div className="text-sm leading-tight text-ink/70 font-body font-semibold">{label}</div>
           </div>
         ))}
       </div>

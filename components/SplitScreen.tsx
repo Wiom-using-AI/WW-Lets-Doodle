@@ -31,23 +31,28 @@ export default function SplitScreen({ employee }: { employee: Employee }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Top bar */}
-      <header className="flex items-center justify-between px-6 py-3 border-b-[3px] border-ink bg-white">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl sm:text-3xl wobble-l">🎨</span>
-          <span className="font-hand font-bold text-2xl sm:text-3xl text-crayon-purple leading-none">
+      {/* Top bar — Wiom logo left, title centred, user right */}
+      <header className="relative flex items-center justify-between px-4 sm:px-6 py-3 border-b-[3px] border-ink bg-white">
+        <div className="flex items-center shrink-0 z-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/wiom-logo.png" alt="Wiom" className="h-6 sm:h-8 w-auto" />
+        </div>
+
+        <div className="absolute inset-x-0 flex justify-center pointer-events-none px-2">
+          <span className="font-hand font-bold text-3xl sm:text-4xl text-crayon-purple leading-none whitespace-nowrap">
             Let&apos;s Doodle <span className="text-crayon-pink">It!</span>
           </span>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="text-right hidden sm:block leading-tight">
+
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 z-10">
+          <div className="text-right hidden md:block leading-tight">
             <div className="text-sm font-bold text-ink">{employee.name}</div>
             <div className="text-xs text-ink/50">{employee.department}</div>
           </div>
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-crayon-yellow border-[3px] border-ink flex items-center justify-center font-hand font-bold text-base sm:text-lg text-ink shrink-0">
             {employee.name.charAt(0).toUpperCase()}
           </div>
-          <a href="/api/auth/logout" title="Log out" className="text-ink/40 hover:text-crayon-red text-xs font-body underline shrink-0">Log out</a>
+          <a href="/api/auth/logout" title="Log out" className="text-ink/40 hover:text-crayon-red text-xs font-body underline shrink-0 hidden sm:inline">Log out</a>
         </div>
       </header>
 

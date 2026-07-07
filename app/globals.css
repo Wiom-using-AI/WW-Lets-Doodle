@@ -56,4 +56,8 @@
   .wobble-r { transform: rotate(1.5deg); }
   @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   .animate-fade-in { animation: fade-in 0.3s ease-out; }
+  /* gentle in-place sway for the info cards */
+  @keyframes sway { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+  .animate-sway { animation: sway 4s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .animate-sway { animation: none; } }
 }
