@@ -37,7 +37,8 @@ export async function GET() {
   if (!employee) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
   const session = await prisma.gameSession.findUnique({ where: { employeeId: employee.id } });
   if (!session) return NextResponse.json({ exists: false });
-  return NextResponse.json(await buildState(session));
+  // Light payload — just enough to decide entry/resume/done (no heavy doodle images).
+  return NextResponse.json({ exists: true, status: session.status, stage: session.stage });
 }
 
 // POST — create-or-resume the session (called when the game actually starts)

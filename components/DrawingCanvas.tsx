@@ -312,19 +312,20 @@ export default function DrawingCanvas({
         </div>
       </div>
 
-      <div className="flex-1 flex min-h-0">
-        <div className="flex-1 p-3 min-w-0">
-          <div ref={containerRef} className="relative w-full h-full rounded-2xl border-[3px] border-ink shadow-doodle overflow-hidden" style={{ cursor: canvasCursor, backgroundColor: "#fff" }}>
-            {/* zoom/pan wrapper — grid + ink both transform together so the guide stays aligned */}
+      <div className="flex-1 flex min-h-0 relative">
+        {/* Canvas area — sheet is bounded & centered (not full-width) so images stay small/fast */}
+        <div className="flex-1 p-3 md:p-5 min-w-0 flex justify-center items-stretch">
+          <div ref={containerRef} className="relative w-full max-w-3xl h-full rounded-2xl border-[3px] border-ink shadow-doodle overflow-hidden" style={{ cursor: canvasCursor, backgroundColor: "#fff" }}>
+            {/* zoom/pan wrapper — grid + ink transform together so the guide stays aligned */}
             <div ref={zoomWrapRef} className="absolute inset-0">
               <div className="absolute inset-0" style={dotGrid} />
               <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ touchAction: "none" }} />
             </div>
 
             <div className="absolute bottom-3 left-3 flex items-center gap-0.5 bg-white border-[3px] border-ink rounded-xl shadow-doodle-sm px-1 py-0.5 z-10">
-              <button onClick={() => zoomBy(0.83)} className="w-7 h-7 rounded-lg hover:bg-black/5 font-bold text-lg leading-none">−</button>
+              <button onClick={() => zoomBy(0.8)} className="w-7 h-7 rounded-lg hover:bg-black/5 font-bold text-lg leading-none">−</button>
               <button onClick={resetZoom} title="Reset zoom" className="text-xs font-body font-bold w-11 text-center">{zoomPct}%</button>
-              <button onClick={() => zoomBy(1.2)} className="w-7 h-7 rounded-lg hover:bg-black/5 font-bold text-lg leading-none">＋</button>
+              <button onClick={() => zoomBy(1.25)} className="w-7 h-7 rounded-lg hover:bg-black/5 font-bold text-lg leading-none">＋</button>
             </div>
 
             {locked && (
@@ -339,10 +340,10 @@ export default function DrawingCanvas({
         </div>
 
         {/* Side toolbar */}
-        <div className="w-16 shrink-0 bg-white border-l-[3px] border-ink flex flex-col items-center gap-2 py-3 overflow-y-auto relative">
-          <ToolBtn active={!isEraser && !isPan} onClick={() => { setIsEraser(false); setIsPan(false); }} title="Pen">✏️</ToolBtn>
-          <ToolBtn active={isEraser} onClick={() => { setIsEraser(true); setIsPan(false); setShowPalette(false); }} title="Eraser">🧽</ToolBtn>
-          <ToolBtn active={isPan} onClick={() => { setIsPan((v) => !v); setShowPalette(false); }} title="Move / pan">✋</ToolBtn>
+        <div className="w-16 shrink-0 bg-white border-l-[3px] border-ink flex flex-col items-center gap-2 py-3">
+          <ToolBtn active={!isEraser && !isPan} onClick={() => { setIsEraser(false); setIsPan(false); setShowPalette(false); setShowSizes(false); }} title="Pen">✏️</ToolBtn>
+          <ToolBtn active={isEraser} onClick={() => { setIsEraser(true); setIsPan(false); setShowPalette(false); setShowSizes(false); }} title="Eraser">🧽</ToolBtn>
+          <ToolBtn active={isPan} onClick={() => { setIsPan((v) => !v); setShowPalette(false); setShowSizes(false); }} title="Move / pan">✋</ToolBtn>
 
           <div className="w-8 border-t-2 border-ink/10 my-0.5" />
 
@@ -352,49 +353,51 @@ export default function DrawingCanvas({
 
           <div className="w-8 border-t-2 border-ink/10 my-0.5" />
 
-          {/* Brush size */}
           <button onClick={() => { setShowSizes((s) => !s); setShowPalette(false); }} title="Brush size"
-            className="w-11 h-11 rounded-xl border-[3px] border-ink bg-white flex items-center justify-center shadow-doodle-sm hover:-translate-y-0.5 transition-transform">
+            className={`w-11 h-11 rounded-xl border-[3px] border-ink flex items-center justify-center shadow-doodle-sm hover:-translate-y-0.5 transition-transform ${showSizes ? "bg-crayon-yellow" : "bg-white"}`}>
             <span className="rounded-full bg-ink block" style={{ width: Math.min(brushSize + 2, 18), height: Math.min(brushSize + 2, 18) }} />
           </button>
-          {showSizes && (
-            <div className="absolute right-16 top-1/2 -translate-y-1/2 mr-1 card p-2 flex flex-col gap-1 z-30">
-              {BRUSH_SIZES.map((s) => (
-                <button key={s} onClick={() => { setBrushSize(s); setIsEraser(false); setIsPan(false); setShowSizes(false); }}
-                  className={`w-12 h-9 rounded-lg flex items-center justify-center border-2 border-ink ${brushSize === s && !isEraser ? "bg-crayon-yellow" : "bg-white"}`}>
-                  <span className="rounded-full bg-ink block" style={{ width: s + 2, height: s + 2 }} />
-                </button>
-              ))}
-            </div>
-          )}
 
-          {/* Colour palette (single button → shades, no clutter) */}
           <button onClick={() => { setShowPalette((s) => !s); setShowSizes(false); setIsEraser(false); setIsPan(false); }} title="Colours"
             className="w-11 h-11 rounded-xl border-[3px] border-ink flex items-center justify-center shadow-doodle-sm hover:-translate-y-0.5 transition-transform relative"
             style={{ backgroundColor: color }}>
             <span className="absolute -bottom-1 -right-1 text-[10px] bg-white border border-ink rounded-full w-4 h-4 flex items-center justify-center">🎨</span>
           </button>
-
-          {showPalette && (
-            <>
-              <div className="fixed inset-0 z-20" onClick={() => setShowPalette(false)} />
-              <div className="absolute right-16 top-2 mr-1 card p-3 z-30 w-[232px]">
-                <p className="font-hand font-bold text-ink text-lg mb-2">Pick a colour</p>
-                <div className="space-y-1.5">
-                  {PALETTE.map((row) => (
-                    <div key={row.name} className="flex gap-1.5">
-                      {row.shades.map((c) => (
-                        <button key={c} onClick={() => { setColor(c); setIsEraser(false); setIsPan(false); setShowPalette(false); }}
-                          className={`w-7 h-7 rounded-lg border-2 border-ink transition-transform hover:scale-110 ${color === c ? "ring-2 ring-crayon-purple ring-offset-1" : ""}`}
-                          style={{ backgroundColor: c }} />
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
         </div>
+
+        {/* Popovers — rendered at the panel level (NOT inside the scrolling toolbar) so they're never clipped */}
+        {showSizes && (
+          <>
+            <div className="fixed inset-0 z-20" onClick={() => setShowSizes(false)} />
+            <div className="absolute right-[76px] top-1/2 -translate-y-1/2 card p-2 flex flex-col gap-1.5 z-30">
+              {BRUSH_SIZES.map((s) => (
+                <button key={s} onClick={() => { setBrushSize(s); setIsEraser(false); setIsPan(false); setShowSizes(false); }}
+                  className={`w-14 h-10 rounded-lg flex items-center justify-center border-2 border-ink ${brushSize === s && !isEraser ? "bg-crayon-yellow" : "bg-white"}`}>
+                  <span className="rounded-full bg-ink block" style={{ width: s + 2, height: s + 2 }} />
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+        {showPalette && (
+          <>
+            <div className="fixed inset-0 z-20" onClick={() => setShowPalette(false)} />
+            <div className="absolute right-[76px] top-1/2 -translate-y-1/2 card p-3 z-30 w-[240px]">
+              <p className="font-hand font-bold text-ink text-lg mb-2">Pick a colour</p>
+              <div className="space-y-1.5">
+                {PALETTE.map((row) => (
+                  <div key={row.name} className="flex gap-1.5 justify-between">
+                    {row.shades.map((c) => (
+                      <button key={c} onClick={() => { setColor(c); setIsEraser(false); setIsPan(false); setShowPalette(false); }}
+                        className={`w-7 h-7 rounded-lg border-2 border-ink transition-transform hover:scale-110 ${color === c ? "ring-2 ring-crayon-purple ring-offset-1" : ""}`}
+                        style={{ backgroundColor: c }} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

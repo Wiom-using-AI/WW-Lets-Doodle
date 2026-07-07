@@ -89,7 +89,14 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
     setPhase("drawing");
   }
 
-  function autosave(img: string) { patch("autosave", img); } // fire-and-forget
+  // Throttle server autosave — at most once every 2.5s (finalize always saves the final image separately).
+  const lastAutosave = useRef(0);
+  function autosave(img: string) {
+    const now = Date.now();
+    if (now - lastAutosave.current < 2500) return;
+    lastAutosave.current = now;
+    patch("autosave", img);
+  }
 
   async function handleDrawingComplete(img: string) {
     const s = await patch("finalize", img);
