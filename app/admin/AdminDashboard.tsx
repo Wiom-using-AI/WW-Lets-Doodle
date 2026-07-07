@@ -7,6 +7,7 @@ type Prompt = { id: string; phrase: string; isActive: boolean };
 type Voter = { name: string; department: string; rank: number };
 type LeaderboardEntry = {
   id: string;
+  employeeId: string;
   imageData: string;
   prompt: string;
   submitter: { name: string; department: string };
@@ -70,6 +71,14 @@ export default function AdminDashboard({
     setBusy(true);
     await fetch("/api/admin/prompts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phrases }) });
     setBulkPrompts("");
+    router.refresh();
+    setBusy(false);
+  }
+
+  async function resetEmployee(employeeId: string, name: string) {
+    if (!window.confirm(`Remove ${name}'s submission so they can play again?\n\nThis deletes their doodle(s) and any votes cast on them. It cannot be undone.`)) return;
+    setBusy(true);
+    await fetch("/api/admin/reset-employee", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ employeeId }) });
     router.refresh();
     setBusy(false);
   }
@@ -224,6 +233,13 @@ export default function AdminDashboard({
                           <span className="font-mono px-2 py-0.5 rounded bg-black/5">Rank {v.rank} (+{4 - v.rank})</span>
                         </div>
                       ))}
+                      <button
+                        onClick={() => resetEmployee(d.employeeId, d.submitter.name)}
+                        disabled={busy}
+                        className="mt-2 w-full bg-white hover:bg-red-700/10 border-2 border-ink/20 hover:border-crayon-red text-ink/70 hover:text-crayon-red font-semibold text-xs px-3 py-2 rounded-lg transition-colors"
+                      >
+                        🗑 Remove {d.submitter.name.split(" ")[0]}&apos;s submission — let them play again
+                      </button>
                     </div>
                   )}
                 </div>

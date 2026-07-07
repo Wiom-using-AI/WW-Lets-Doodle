@@ -39,7 +39,9 @@ Cloudflare Worker reverse-proxy (in `cloudflare-worker/`) · Slack Web API for O
   overlay. Wiom logo top-left (header) / top-right (login). Fully responsive (mobile + laptop).
 - **Admin portal (`/admin`):** event control (manual — see decisions), employee CSV/XLSX upload,
   prompt bank (single add + bulk paste), leaderboard with per-doodle voter breakdown, **Data & Exports**
-  (Logged-in / Played / Voted lists, each downloadable as Excel), **Reset Data** (type-to-confirm).
+  (Logged-in / Played / Voted lists, each downloadable as Excel), **Reset Data** (wipe all, type-to-confirm),
+  and **per-employee submission removal** (in the leaderboard → expand a row → "Remove … submission — let them play again";
+  deletes that employee's session + doodles + votes on them, keeps the employee so they can redraw).
 - **Results screen:** shown when the event is closed (status `completed`) — top 3 winners + all submissions.
 - **Deployment:** via Railway CLI `railway up` (see CLAUDE.md). Cloudflare proxy fronts it.
 - **QR poster:** printable poster artifact + `Desktop\doodle-qr.png/.svg` encoding the proxy URL.

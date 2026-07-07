@@ -30,6 +30,7 @@ export default async function AdminPage() {
   const leaderboard = submitted
     .map((d) => ({
       id: d.id,
+      employeeId: d.session.employee.id,
       imageData: d.imageData,
       prompt: promptMap[d.promptId] ?? "",
       submitter: { name: d.session.employee.name, department: d.session.employee.department },
