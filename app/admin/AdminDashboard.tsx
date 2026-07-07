@@ -15,13 +15,16 @@ type LeaderboardEntry = {
   voters: Voter[];
 };
 
+type Row = Record<string, string | number>;
+
 export default function AdminDashboard({
-  event, stats, prompts, leaderboard,
+  event, stats, prompts, leaderboard, data,
 }: {
   event: { id: string; status: string };
   stats: { employeeCount: number; promptCount: number; doodleCount: number };
   prompts: Prompt[];
   leaderboard: LeaderboardEntry[];
+  data: { logins: Row[]; played: Row[]; voted: Row[] };
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -74,12 +77,19 @@ export default function AdminDashboard({
   async function resetData() {
     setBusy(true);
     const res = await fetch("/api/admin/reset", { method: "POST" });
-    const data = await res.json();
-    setResetMsg(res.ok ? `✅ Cleared ${data.doodles} doodles, ${data.votes} votes, ${data.sessions} sessions.` : `❌ ${data.error}`);
+    const j = await res.json();
+    setResetMsg(res.ok ? `✅ Cleared ${j.doodles} doodles, ${j.votes} votes, ${j.sessions} sessions.` : `❌ ${j.error}`);
     setShowReset(false);
     setResetText("");
     router.refresh();
     setBusy(false);
+  }
+
+  function downloadXlsx(rows: Row[], filename: string) {
+    const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{}]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
+    XLSX.writeFile(wb, filename);
   }
 
   async function uploadFile_() {
@@ -221,6 +231,33 @@ export default function AdminDashboard({
             })}
           </div>
         )}
+      </div>
+
+      {/* Data & exports */}
+      <div className="card p-5 space-y-3">
+        <h2 className="font-bold text-ink/70">Data &amp; Exports</h2>
+        <p className="text-xs text-ink/40">For your records — download as Excel. (Submissions are viewable in the leaderboard above.)</p>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {([["👤 Logged in", data.logins, "logins.xlsx"], ["🎨 Played", data.played, "played.xlsx"], ["🗳️ Voted", data.voted, "voted.xlsx"]] as [string, Row[], string][]).map(([title, rows, file]) => (
+            <div key={title} className="bg-black/5 rounded-xl p-3 space-y-2">
+              <div className="flex items-baseline justify-between">
+                <span className="font-semibold text-sm text-ink">{title}</span>
+                <span className="text-2xl font-hand font-bold text-crayon-purple">{rows.length}</span>
+              </div>
+              <div className="max-h-28 overflow-y-auto space-y-0.5">
+                {rows.length === 0 ? <p className="text-xs text-ink/40">None yet.</p> :
+                  rows.map((r, i) => (
+                    <div key={i} className="text-xs text-ink/70 truncate">
+                      {String(r.Name)}
+                      {r.Votes !== undefined ? ` · ${r.Votes} votes` : ""}
+                      {r.Submitted !== undefined ? ` · ${r.Submitted === "Yes" ? "submitted" : "in progress"}` : ""}
+                    </div>
+                  ))}
+              </div>
+              <button onClick={() => downloadXlsx(rows, file)} disabled={rows.length === 0} className="btn-secondary text-xs w-full disabled:opacity-40">⬇ Download Excel</button>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Employee upload */}

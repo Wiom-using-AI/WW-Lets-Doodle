@@ -48,8 +48,8 @@ export default function LoginScreen() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-      {/* scattered doodle decorations */}
-      <div className="pointer-events-none absolute inset-0 select-none">
+      {/* scattered doodle decorations (desktop only — avoid overlapping the title on phones) */}
+      <div className="pointer-events-none absolute inset-0 select-none hidden sm:block">
         <span className="absolute top-[12%] left-[10%] text-4xl wobble-l">✏️</span>
         <span className="absolute top-[20%] right-[12%] text-5xl wobble-r">⭐</span>
         <span className="absolute bottom-[16%] left-[14%] text-5xl wobble-r">🖍️</span>
@@ -60,12 +60,12 @@ export default function LoginScreen() {
       <div className="text-center space-y-7 max-w-md w-full relative z-10">
         <div className="space-y-3">
           <div className="text-7xl inline-block wobble-l">🎨</div>
-          <h1 className="text-6xl font-hand font-bold leading-none">
-            {"WW Let's".split("").map((c, i) => (
+          <h1 className="text-5xl sm:text-6xl font-hand font-bold leading-none">
+            {"Let's Doodle".split("").map((c, i) => (
               <span key={i} className={titleColors[i % titleColors.length]}>{c === " " ? " " : c}</span>
             ))}
             <br />
-            <span className="text-crayon-pink">Doodle!</span>
+            <span className="text-crayon-pink">It!</span>
           </h1>
           <p className="text-ink/70 text-lg font-body">Wiom Wednesday &mdash; Draw. Vote. Win. 🏆</p>
         </div>

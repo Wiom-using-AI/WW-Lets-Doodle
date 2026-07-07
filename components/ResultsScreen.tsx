@@ -30,7 +30,7 @@ export default async function ResultsScreen() {
       <div className="text-center py-12 px-4 space-y-3">
         <div className="text-7xl wobble-l inline-block">🏆</div>
         <h1 className="text-6xl font-hand font-bold">
-          <span className="text-crayon-orange">WW Let&apos;s </span><span className="text-crayon-pink">Doodle!</span>
+          <span className="text-crayon-orange">Let&apos;s Doodle </span><span className="text-crayon-pink">It!</span>
         </h1>
         <p className="text-ink/70 text-lg font-body">The votes are in. Here are your champions! 🎉</p>
       </div>

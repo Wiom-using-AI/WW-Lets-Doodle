@@ -6,7 +6,7 @@ const fredoka = Fredoka({ subsets: ["latin"], weight: ["400", "500", "600", "700
 const gaegu = Gaegu({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-gaegu" });
 
 export const metadata: Metadata = {
-  title: "WW Let's Doodle",
+  title: "Let's Doodle It!",
   description: "Wiom Wednesday Doodle Challenge",
 };
 

@@ -20,10 +20,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Incorrect OTP. Please try again." }, { status: 401 });
   }
 
-  // Clear OTP after successful use
+  // Clear OTP after successful use and record the login (first login timestamp kept).
   await prisma.employee.update({
     where: { id: employee.id },
-    data: { otpCode: null, otpExpiry: null },
+    data: { otpCode: null, otpExpiry: null, loggedInAt: employee.loggedInAt ?? new Date() },
   });
 
   const res = NextResponse.json({ ok: true });

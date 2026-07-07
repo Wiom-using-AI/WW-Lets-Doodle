@@ -42,5 +42,34 @@ export default async function AdminPage() {
     }))
     .sort((a, b) => b.points - a.points || b.voteCount - a.voteCount);
 
-  return <AdminDashboard event={event} stats={{ employeeCount, promptCount, doodleCount }} prompts={prompts} leaderboard={leaderboard} />;
+  // --- Data for record-keeping (downloadable as Excel) ---
+  const fmt = (d: Date | null) => (d ? new Date(d).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) : "");
+
+  const loginRows = (await prisma.employee.findMany({ where: { loggedInAt: { not: null } }, orderBy: { loggedInAt: "asc" } }))
+    .map((e) => ({ Name: e.name, Email: e.email, Department: e.department, "Logged in at": fmt(e.loggedInAt) }));
+
+  const playedSessions = await prisma.gameSession.findMany({ include: { employee: true }, orderBy: { createdAt: "asc" } });
+  const playedRows = playedSessions.map((s) => ({
+    Name: s.employee.name, Email: s.employee.email, Department: s.employee.department,
+    Submitted: s.status === "completed" ? "Yes" : "No", "Started at": fmt(s.createdAt),
+  }));
+
+  const allVotes = await prisma.vote.findMany({ include: { voter: true } });
+  const voterMap = new Map<string, { Name: string; Email: string; Department: string; Votes: number }>();
+  for (const v of allVotes) {
+    const cur = voterMap.get(v.voterId) ?? { Name: v.voter.name, Email: v.voter.email, Department: v.voter.department, Votes: 0 };
+    cur.Votes += 1;
+    voterMap.set(v.voterId, cur);
+  }
+  const votedRows = Array.from(voterMap.values()).sort((a, b) => b.Votes - a.Votes);
+
+  return (
+    <AdminDashboard
+      event={event}
+      stats={{ employeeCount, promptCount, doodleCount }}
+      prompts={prompts}
+      leaderboard={leaderboard}
+      data={{ logins: loginRows, played: playedRows, voted: votedRows }}
+    />
+  );
 }

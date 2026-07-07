@@ -57,14 +57,9 @@ export default function GalleryPanel({ employeeId }: { employeeId: string }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-3 border-b-[3px] border-ink bg-white flex items-center justify-between">
-        <div>
-          <h2 className="font-hand font-bold text-2xl text-crayon-pink leading-none">🎨 Doodle Gallery</h2>
-          <p className="text-xs text-ink/60 font-body">Browse everyone&apos;s doodles and rate your favourites! ⭐</p>
-        </div>
-        <button onClick={fetchDoodles} className="chip bg-white hover:bg-crayon-yellow transition-colors">
-          ↻ Refresh
-        </button>
+      <div className="px-5 py-4 border-b-[3px] border-ink bg-white text-center">
+        <h2 className="font-hand font-bold text-3xl md:text-4xl text-crayon-pink leading-tight">🎨 Doodle Gallery</h2>
+        <p className="text-sm md:text-base text-ink font-body font-semibold mt-0.5">Browse everyone&apos;s doodles and rate your favourites! ⭐</p>
       </div>
 
       {/* How-to-vote banner (always visible) */}
