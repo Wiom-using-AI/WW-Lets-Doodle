@@ -66,16 +66,16 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
       <div className="space-y-2">
         <div className="text-7xl animate-bounce">🖌️</div>
         <h2 className="text-4xl font-hand font-bold text-crayon-purple">Playground</h2>
-        <p className="text-ink/70 font-body max-w-xs">
+        <p className="text-ink/80 font-body font-semibold text-lg max-w-sm">
           You&apos;ll get 3 surprise prompts. Draw each one in 5 minutes. Pick your best to submit!
         </p>
       </div>
 
       <div className="grid grid-cols-3 gap-3 text-center">
         {stats.map(([val, label, color], i) => (
-          <div key={label} className={`card p-2.5 space-y-0.5 ${i % 2 ? "wobble-r" : "wobble-l"}`}>
-            <div className={`text-2xl font-hand font-bold ${color}`}>{val}</div>
-            <div className="text-[11px] leading-tight text-ink/60 font-body">{label}</div>
+          <div key={label} className={`card p-3 space-y-0.5 ${i % 2 ? "wobble-r" : "wobble-l"}`}>
+            <div className={`text-3xl font-hand font-bold ${color}`}>{val}</div>
+            <div className="text-xs leading-tight text-ink/70 font-body font-semibold">{label}</div>
           </div>
         ))}
       </div>

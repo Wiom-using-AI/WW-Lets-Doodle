@@ -5,6 +5,7 @@
 @layer base {
   body {
     @apply text-ink font-body;
+    font-weight: 500; /* Fredoka's 400 reads too light — 500 is the legible baseline */
     background-color: #fdf7e9;
     /* subtle sketchbook dot-grid */
     background-image: radial-gradient(#00000010 1.5px, transparent 1.5px);
