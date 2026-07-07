@@ -1,0 +1,12 @@
+name = "lets-doodle-it"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# By default this deploys to:
+#   https://lets-doodle-it.<your-workers-subdomain>.workers.dev
+#
+# To use a custom domain instead (recommended, e.g. doodle.wiom.in), add a route
+# once the domain is on Cloudflare:
+# [[routes]]
+# pattern = "doodle.wiom.in/*"
+# zone_name = "wiom.in"
