@@ -1,5 +1,12 @@
 # WW Let's Doodle — Project Context
 
+## 📋 HANDOVER convention (do this after every major milestone)
+After each major milestone, regenerate **HANDOVER.md** in the repo root capturing:
+1. **What's implemented** · 2. **Pending tasks** · 3. **Important decisions** · 4. **Known issues**
+Also update the "Live URLs" and "Last updated" line. HANDOVER.md is the single source of truth
+for project status; keep it current so anyone can pick up the project cold.
+(App is now branded "Let's Doodle It!"; login is OTP-via-Slack, not OAuth — some sections below are historical.)
+
 ## What this is
 A one-time Wednesday activity portal for Wiom employees across all locations.
 Employees log in via Slack OAuth, draw prompted phrases on a browser canvas, submit their doodle, and it shows up on a live gallery. Voting determines top 3 winners who get surprise goodies.
