@@ -211,19 +211,20 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
   if (phase === "preview") {
     const attempts = (state?.doodles ?? []).filter((d) => d.finalized).sort((a, b) => a.tryNumber - b.tryNumber);
     return (
-      <div className="flex-1 flex flex-col p-6 space-y-4 overflow-y-auto">
-        <div className="text-center space-y-1">
+      <div className="flex-1 flex flex-col overflow-y-auto">
+        <div className="text-center space-y-1 py-5 shrink-0">
           <h2 className="text-3xl font-hand font-bold text-crayon-purple">Pick Your Best</h2>
-          <p className="text-ink/60 text-sm font-body">Select the doodle you want to submit to the gallery</p>
+          <p className="text-ink/70 text-base font-body font-semibold">Select the doodle you want to submit{attempts.length > 1 ? ` — scroll to see all ${attempts.length}` : ""}</p>
         </div>
-        <div className="space-y-4">
+        {/* Centered ~half-width column; images capped so the next card peeks (prompts you to scroll) */}
+        <div className="px-4 pb-6 mx-auto w-full max-w-xl space-y-6">
           {attempts.map((a) => (
             <div key={a.tryNumber} className="card p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="chip bg-crayon-yellow text-xs">Try {a.tryNumber}</span>
-                <span className="text-xs text-ink/60 font-body font-medium">{state?.prompts[a.tryNumber - 1]}</span>
+                <span className="text-sm text-ink/70 font-body font-semibold">{state?.prompts[a.tryNumber - 1]}</span>
               </div>
-              <img src={a.imageData} alt={`Try ${a.tryNumber}`} className="w-full rounded-xl border-2 border-ink" />
+              <img src={a.imageData} alt={`Try ${a.tryNumber}`} className="w-full max-h-[46vh] object-contain rounded-xl border-2 border-ink bg-white" />
               <button onClick={() => handleSubmit(a.tryNumber)} className="btn-primary w-full">Submit This Doodle 🚀</button>
             </div>
           ))}
