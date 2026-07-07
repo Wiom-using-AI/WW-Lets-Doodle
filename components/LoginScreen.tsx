@@ -48,6 +48,10 @@ export default function LoginScreen() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Wiom logo — upper right */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/wiom-logo.png" alt="Wiom" className="absolute top-5 right-6 h-7 sm:h-9 w-auto z-20" />
+
       {/* scattered doodle decorations (desktop only — avoid overlapping the title on phones) */}
       <div className="pointer-events-none absolute inset-0 select-none hidden sm:block">
         <span className="absolute top-[12%] left-[10%] text-4xl wobble-l">✏️</span>
@@ -60,14 +64,11 @@ export default function LoginScreen() {
       <div className="text-center space-y-7 max-w-md w-full relative z-10">
         <div className="space-y-3">
           <div className="text-7xl inline-block wobble-l">🎨</div>
-          <h1 className="text-5xl sm:text-6xl font-hand font-bold leading-none">
-            {"Let's Doodle".split("").map((c, i) => (
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-hand font-bold leading-none whitespace-nowrap">
+            {"Let's Doodle It!".split("").map((c, i) => (
               <span key={i} className={titleColors[i % titleColors.length]}>{c === " " ? " " : c}</span>
             ))}
-            <br />
-            <span className="text-crayon-pink">It!</span>
           </h1>
-          <p className="text-ink/70 text-lg font-body">Wiom Wednesday &mdash; Draw. Vote. Win. 🏆</p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
