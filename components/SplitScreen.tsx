@@ -1,38 +1,19 @@
 "use client";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import PlaygroundPanel from "./PlaygroundPanel";
 import GalleryPanel from "./GalleryPanel";
 
 type Employee = { id: string; name: string; department: string; email: string };
 
 export default function SplitScreen({ employee }: { employee: Employee }) {
-  // Mobile shows one panel at a time (tabs + swipe); desktop shows both side-by-side.
-  const [view, setView] = useState<"play" | "gallery">("play");
-
-  // Horizontal swipe to slide between Playground and Gallery (mobile only).
-  const touch = useRef<{ x: number; y: number; onCanvas: boolean } | null>(null);
-  function onTouchStart(e: React.TouchEvent) {
-    const t = e.touches[0];
-    // Ignore swipes that start on the drawing canvas so they don't fight drawing.
-    const onCanvas = !!(e.target as HTMLElement)?.closest?.("canvas");
-    touch.current = { x: t.clientX, y: t.clientY, onCanvas };
-  }
-  function onTouchEnd(e: React.TouchEvent) {
-    const start = touch.current;
-    touch.current = null;
-    if (!start || start.onCanvas) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - start.x;
-    const dy = t.clientY - start.y;
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy)) return; // must be a clear horizontal swipe
-    if (dx < 0) setView("gallery"); // swipe left → reveal gallery
-    else setView("play"); // swipe right → back to playground
-  }
+  // Playground is the fixed main view. Gallery opens as a full-screen popup so its length
+  // never affects the playground layout.
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-[100dvh] flex flex-col overflow-hidden">
       {/* Top bar — Wiom logo left, title centred, user right */}
-      <header className="relative flex items-center justify-between px-4 sm:px-6 py-3 border-b-[3px] border-ink bg-white">
+      <header className="relative flex items-center justify-between px-4 sm:px-6 py-3 border-b-[3px] border-ink bg-white shrink-0">
         <div className="flex items-center shrink-0 z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/wiom-logo.png" alt="Wiom" className="h-6 sm:h-8 w-auto" />
@@ -56,37 +37,40 @@ export default function SplitScreen({ employee }: { employee: Employee }) {
         </div>
       </header>
 
-      {/* Tab switcher (all sizes) — Playground and Gallery are separate full-screen views */}
-      <div className="flex border-b-[3px] border-ink bg-white">
+      {/* Tabs — Playground stays put; Gallery opens the full-screen popup */}
+      <div className="flex border-b-[3px] border-ink bg-white shrink-0">
         <button
-          onClick={() => setView("play")}
-          className={`flex-1 py-3 text-sm font-bold transition-colors ${view !== "gallery" ? "text-crayon-purple border-b-4 border-crayon-purple" : "text-ink/40"}`}
+          onClick={() => setGalleryOpen(false)}
+          className={`flex-1 py-3 text-sm font-bold transition-colors ${!galleryOpen ? "text-crayon-purple border-b-4 border-crayon-purple" : "text-ink/40"}`}
         >
           🖌 Playground
         </button>
         <button
-          onClick={() => setView("gallery")}
-          className={`flex-1 py-3 text-sm font-bold transition-colors ${view === "gallery" ? "text-crayon-pink border-b-4 border-crayon-pink" : "text-ink/40"}`}
+          onClick={() => setGalleryOpen(true)}
+          className={`flex-1 py-3 text-sm font-bold transition-colors ${galleryOpen ? "text-crayon-pink border-b-4 border-crayon-pink" : "text-ink/40"}`}
         >
           🖼 Gallery
         </button>
       </div>
 
-      {/* Sliding track — one full-screen view at a time (swipe or tabs), same on all sizes */}
-      <div className="flex-1 overflow-hidden">
-        <div
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-          className={`flex h-full w-[200%] transition-transform duration-300 ease-out ${view === "gallery" ? "-translate-x-1/2" : "translate-x-0"}`}
-        >
-          <div className="w-1/2 flex flex-col min-h-0">
-            <PlaygroundPanel employee={employee} />
-          </div>
-          <div className="w-1/2 flex flex-col min-h-0">
-            <GalleryPanel employeeId={employee.id} />
-          </div>
-        </div>
+      {/* Playground — always fills exactly the remaining viewport (never pushed by the gallery) */}
+      <div className="flex-1 min-h-0 flex flex-col">
+        <PlaygroundPanel employee={employee} />
       </div>
+
+      {/* Gallery — full-screen popup */}
+      {galleryOpen && (
+        <div className="fixed inset-0 z-50 bg-paper flex flex-col">
+          <button
+            onClick={() => setGalleryOpen(false)}
+            title="Close gallery"
+            className="absolute top-2.5 right-3 sm:top-3.5 sm:right-5 z-30 w-10 h-10 rounded-full bg-white border-[3px] border-ink shadow-doodle-sm flex items-center justify-center text-lg font-bold hover:-translate-y-0.5 transition-transform"
+          >
+            ✕
+          </button>
+          <GalleryPanel employeeId={employee.id} />
+        </div>
+      )}
     </div>
   );
 }

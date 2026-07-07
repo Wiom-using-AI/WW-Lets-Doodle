@@ -312,9 +312,9 @@ export default function DrawingCanvas({
         </div>
       </div>
 
-      <div className="flex-1 flex min-h-0 relative">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 relative">
         {/* Canvas area — sheet is bounded & centered (not full-width) so images stay small/fast */}
-        <div className="flex-1 p-3 md:p-5 min-w-0 flex justify-center items-stretch">
+        <div className="order-2 md:order-1 flex-1 min-h-0 p-3 md:p-5 min-w-0 flex justify-center items-stretch">
           <div ref={containerRef} className="relative w-full max-w-3xl h-full rounded-2xl border-[3px] border-ink shadow-doodle overflow-hidden" style={{ cursor: canvasCursor, backgroundColor: "#fff" }}>
             {/* zoom/pan wrapper — grid + ink transform together so the guide stays aligned */}
             <div ref={zoomWrapRef} className="absolute inset-0">
@@ -339,40 +339,42 @@ export default function DrawingCanvas({
           </div>
         </div>
 
-        {/* Side toolbar */}
-        <div className="w-16 shrink-0 bg-white border-l-[3px] border-ink flex flex-col items-center gap-2 py-3">
+        {/* Toolbar — top ribbon on mobile, right rail on desktop */}
+        <div className="order-1 md:order-2 shrink-0 w-full md:w-16 bg-white border-b-[3px] md:border-b-0 md:border-l-[3px] border-ink flex md:flex-col items-center justify-center md:justify-start gap-1.5 md:gap-2 py-2 md:py-3 flex-wrap md:flex-nowrap">
           <ToolBtn active={!isEraser && !isPan} onClick={() => { setIsEraser(false); setIsPan(false); setShowPalette(false); setShowSizes(false); }} title="Pen">✏️</ToolBtn>
           <ToolBtn active={isEraser} onClick={() => { setIsEraser(true); setIsPan(false); setShowPalette(false); setShowSizes(false); }} title="Eraser">🧽</ToolBtn>
           <ToolBtn active={isPan} onClick={() => { setIsPan((v) => !v); setShowPalette(false); setShowSizes(false); }} title="Move / pan">✋</ToolBtn>
 
-          <div className="w-8 border-t-2 border-ink/10 my-0.5" />
+          <div className="h-7 border-l-2 border-ink/10 mx-0.5 md:hidden" />
+          <div className="hidden md:block w-8 border-t-2 border-ink/10 my-0.5" />
 
           <ToolBtn onClick={undo} disabled={!canUndo} title="Undo">↩</ToolBtn>
           <ToolBtn onClick={redo} disabled={!canRedo} title="Redo">↪</ToolBtn>
           <ToolBtn onClick={clearCanvas} title="Clear all">🗑️</ToolBtn>
 
-          <div className="w-8 border-t-2 border-ink/10 my-0.5" />
+          <div className="h-7 border-l-2 border-ink/10 mx-0.5 md:hidden" />
+          <div className="hidden md:block w-8 border-t-2 border-ink/10 my-0.5" />
 
           <button onClick={() => { setShowSizes((s) => !s); setShowPalette(false); }} title="Brush size"
-            className={`w-11 h-11 rounded-xl border-[3px] border-ink flex items-center justify-center shadow-doodle-sm hover:-translate-y-0.5 transition-transform ${showSizes ? "bg-crayon-yellow" : "bg-white"}`}>
-            <span className="rounded-full bg-ink block" style={{ width: Math.min(brushSize + 2, 18), height: Math.min(brushSize + 2, 18) }} />
+            className={`w-9 h-9 md:w-11 md:h-11 rounded-xl border-[3px] border-ink flex items-center justify-center shadow-doodle-sm hover:-translate-y-0.5 transition-transform ${showSizes ? "bg-crayon-yellow" : "bg-white"}`}>
+            <span className="rounded-full bg-ink block" style={{ width: Math.min(brushSize + 2, 16), height: Math.min(brushSize + 2, 16) }} />
           </button>
 
           <button onClick={() => { setShowPalette((s) => !s); setShowSizes(false); setIsEraser(false); setIsPan(false); }} title="Colours"
-            className="w-11 h-11 rounded-xl border-[3px] border-ink flex items-center justify-center shadow-doodle-sm hover:-translate-y-0.5 transition-transform relative"
+            className="w-9 h-9 md:w-11 md:h-11 rounded-xl border-[3px] border-ink flex items-center justify-center shadow-doodle-sm hover:-translate-y-0.5 transition-transform relative"
             style={{ backgroundColor: color }}>
-            <span className="absolute -bottom-1 -right-1 text-[10px] bg-white border border-ink rounded-full w-4 h-4 flex items-center justify-center">🎨</span>
+            <span className="absolute -bottom-1 -right-1 text-[9px] bg-white border border-ink rounded-full w-4 h-4 flex items-center justify-center">🎨</span>
           </button>
         </div>
 
-        {/* Popovers — rendered at the panel level (NOT inside the scrolling toolbar) so they're never clipped */}
+        {/* Popovers — panel-level so they're never clipped. Below the ribbon on mobile, left of the rail on desktop. */}
         {showSizes && (
           <>
             <div className="fixed inset-0 z-20" onClick={() => setShowSizes(false)} />
-            <div className="absolute right-[76px] top-1/2 -translate-y-1/2 card p-2 flex flex-col gap-1.5 z-30">
+            <div className="absolute z-30 card p-2 flex md:flex-col gap-1.5 left-1/2 -translate-x-1/2 top-16 md:left-auto md:translate-x-0 md:right-[76px] md:top-1/2 md:-translate-y-1/2">
               {BRUSH_SIZES.map((s) => (
                 <button key={s} onClick={() => { setBrushSize(s); setIsEraser(false); setIsPan(false); setShowSizes(false); }}
-                  className={`w-14 h-10 rounded-lg flex items-center justify-center border-2 border-ink ${brushSize === s && !isEraser ? "bg-crayon-yellow" : "bg-white"}`}>
+                  className={`w-11 h-11 md:w-14 md:h-10 rounded-lg flex items-center justify-center border-2 border-ink ${brushSize === s && !isEraser ? "bg-crayon-yellow" : "bg-white"}`}>
                   <span className="rounded-full bg-ink block" style={{ width: s + 2, height: s + 2 }} />
                 </button>
               ))}
@@ -382,7 +384,7 @@ export default function DrawingCanvas({
         {showPalette && (
           <>
             <div className="fixed inset-0 z-20" onClick={() => setShowPalette(false)} />
-            <div className="absolute right-[76px] top-1/2 -translate-y-1/2 card p-3 z-30 w-[240px]">
+            <div className="absolute z-30 card p-3 w-[240px] left-1/2 -translate-x-1/2 top-16 md:left-auto md:translate-x-0 md:right-[76px] md:top-1/2 md:-translate-y-1/2">
               <p className="font-hand font-bold text-ink text-lg mb-2">Pick a colour</p>
               <div className="space-y-1.5">
                 {PALETTE.map((row) => (
@@ -408,7 +410,7 @@ function ToolBtn({ children, onClick, active, disabled, title }: {
 }) {
   return (
     <button onClick={onClick} disabled={disabled} title={title}
-      className={`w-11 h-11 rounded-xl border-[3px] border-ink flex items-center justify-center text-xl shadow-doodle-sm transition-all
+      className={`w-9 h-9 md:w-11 md:h-11 rounded-xl border-[3px] border-ink flex items-center justify-center text-lg md:text-xl shadow-doodle-sm transition-all
         hover:-translate-y-0.5 disabled:opacity-30 disabled:translate-y-0 ${active ? "bg-crayon-yellow" : "bg-white"}`}>
       {children}
     </button>
