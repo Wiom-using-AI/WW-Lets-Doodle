@@ -40,7 +40,8 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
         <div className="text-7xl wobble-l">🎉</div>
         <h2 className="text-4xl font-hand font-bold text-crayon-green">Doodle Submitted!</h2>
         <div className="card p-5 max-w-xs space-y-2">
-          <p className="text-ink/80 font-body">Your doodle is now live in the gallery. Vote for your favourites on the right! 👉</p>
+          <p className="text-ink/80 font-body">Your doodle is now live in the gallery! Head to the <span className="font-bold text-crayon-pink">Gallery</span> to vote for your favourites.</p>
+          <p className="text-ink/40 text-xs font-body md:hidden">👉 Swipe left or tap the Gallery tab</p>
         </div>
         <p className="text-ink/50 text-sm font-body">Results will be announced soon after submissions close.</p>
       </div>

@@ -1,14 +1,33 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PlaygroundPanel from "./PlaygroundPanel";
 import GalleryPanel from "./GalleryPanel";
 
 type Employee = { id: string; name: string; department: string; email: string };
 
 export default function SplitScreen({ employee }: { employee: Employee }) {
-  // Default to the playground on mobile (one panel at a time via the tab switcher);
-  // on desktop both panels always show side-by-side via md:flex.
-  const [view, setView] = useState<"split" | "play" | "gallery">("play");
+  // Mobile shows one panel at a time (tabs + swipe); desktop shows both side-by-side.
+  const [view, setView] = useState<"play" | "gallery">("play");
+
+  // Horizontal swipe to slide between Playground and Gallery (mobile only).
+  const touch = useRef<{ x: number; y: number; onCanvas: boolean } | null>(null);
+  function onTouchStart(e: React.TouchEvent) {
+    const t = e.touches[0];
+    // Ignore swipes that start on the drawing canvas so they don't fight drawing.
+    const onCanvas = !!(e.target as HTMLElement)?.closest?.("canvas");
+    touch.current = { x: t.clientX, y: t.clientY, onCanvas };
+  }
+  function onTouchEnd(e: React.TouchEvent) {
+    const start = touch.current;
+    touch.current = null;
+    if (!start || start.onCanvas) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy)) return; // must be a clear horizontal swipe
+    if (dx < 0) setView("gallery"); // swipe left → reveal gallery
+    else setView("play"); // swipe right → back to playground
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -48,15 +67,21 @@ export default function SplitScreen({ employee }: { employee: Employee }) {
         </button>
       </div>
 
-      {/* Split screen */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Playground */}
-        <div className={`${view === "gallery" ? "hidden" : "flex"} md:flex flex-col md:w-1/2 w-full md:border-r-[3px] border-ink`}>
-          <PlaygroundPanel employee={employee} />
-        </div>
-        {/* Gallery */}
-        <div className={`${view !== "gallery" && view !== "split" ? "hidden" : "flex"} md:flex flex-col md:w-1/2 w-full bg-white/40`}>
-          <GalleryPanel employeeId={employee.id} />
+      {/* Split screen — mobile: sliding track (swipe or tabs); desktop: side-by-side */}
+      <div className="flex-1 overflow-hidden">
+        <div
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          className={`flex h-full w-[200%] md:w-full transition-transform duration-300 ease-out md:translate-x-0 ${view === "gallery" ? "-translate-x-1/2" : "translate-x-0"}`}
+        >
+          {/* Playground */}
+          <div className="w-1/2 flex flex-col md:border-r-[3px] border-ink min-h-0">
+            <PlaygroundPanel employee={employee} />
+          </div>
+          {/* Gallery */}
+          <div className="w-1/2 flex flex-col bg-white/40 min-h-0">
+            <GalleryPanel employeeId={employee.id} />
+          </div>
         </div>
       </div>
     </div>
