@@ -70,6 +70,7 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
   const currentTry = state?.currentTry ?? 1;
   const prompt = state ? state.prompts[currentTry - 1] : "";
   const isLast = currentTry === 3;
+  const finalizedCount = (state?.doodles ?? []).filter((d) => d.finalized).length;
 
   function deadlineMs(): number {
     if (!state?.tryStartedAt) return Date.now() + (state?.tryDurationMs ?? 300_000);
@@ -187,12 +188,15 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
           Prompt: <span className="text-ink font-bold">{prompt}</span>
         </p>
         <div className="flex gap-3 w-full max-w-xs">
-          {!isLast && <button onClick={handleRetry} className="btn-secondary flex-1">Next prompt</button>}
-          <button onClick={() => handleSubmit(currentTry)} className="btn-primary flex-1">Let&apos;s finalise this doodle</button>
+          {!isLast && <button onClick={handleRetry} className="btn-secondary flex-1">🎲 Next prompt</button>}
+          <button onClick={() => handleSubmit(currentTry)} className="btn-primary flex-1">Finalise this one</button>
         </div>
+        {finalizedCount >= 2 && (
+          <button onClick={handleKeep} className="btn-secondary w-full max-w-xs">🖼️ Compare all {finalizedCount} &amp; pick the best →</button>
+        )}
         {!isLast
-          ? <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">Want a different one? Get a new prompt ({3 - currentTry} left). Happy with it? Finalise to submit.</p>
-          : <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">This was your last prompt — finalise to submit your doodle.</p>}
+          ? <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">Get a new prompt ({3 - currentTry} left), finalise this one, or compare &amp; pick your best.</p>
+          : <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">Last prompt! Finalise this one, or compare all {finalizedCount} and pick your best.</p>}
       </div>
     );
   }
