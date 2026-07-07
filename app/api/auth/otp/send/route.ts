@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       channel: dmData.channel.id,
-      text: `Hi ${employee.name}! 👋\n\nYour WW Let's Doodle login code is:\n\n*${otp}*\n\nThis code expires in 10 minutes. Happy doodling! 🎨`,
+      text: `Hi ${employee.name}! 👋\n\nYour *Let's Doodle It!* login code is:\n\n*${otp}*\n\nThis code expires in 10 minutes. Happy doodling! 🎨`,
     }),
   });
   const msgData = await msgRes.json();

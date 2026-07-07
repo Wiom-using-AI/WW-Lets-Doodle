@@ -77,7 +77,7 @@ export default async function ResultsScreen() {
         )}
       </div>
 
-      <div className="text-center py-8 text-ink/30 text-xs font-body">WW Let&apos;s Doodle · Wiom Wednesday Activity</div>
+      <div className="text-center py-8 text-ink/30 text-xs font-body">Let&apos;s Doodle It! · Wiom Wednesday Activity</div>
     </div>
   );
 }

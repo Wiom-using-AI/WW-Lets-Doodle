@@ -51,8 +51,8 @@ export default function SplitScreen({ employee }: { employee: Employee }) {
         </div>
       </header>
 
-      {/* Mobile tab switcher */}
-      <div className="flex md:hidden border-b-[3px] border-ink bg-white">
+      {/* Tab switcher (all sizes) — Playground and Gallery are separate full-screen views */}
+      <div className="flex border-b-[3px] border-ink bg-white">
         <button
           onClick={() => setView("play")}
           className={`flex-1 py-3 text-sm font-bold transition-colors ${view !== "gallery" ? "text-crayon-purple border-b-4 border-crayon-purple" : "text-ink/40"}`}
@@ -67,19 +67,17 @@ export default function SplitScreen({ employee }: { employee: Employee }) {
         </button>
       </div>
 
-      {/* Split screen — mobile: sliding track (swipe or tabs); desktop: side-by-side */}
+      {/* Sliding track — one full-screen view at a time (swipe or tabs), same on all sizes */}
       <div className="flex-1 overflow-hidden">
         <div
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
-          className={`flex h-full w-[200%] md:w-full transition-transform duration-300 ease-out md:translate-x-0 ${view === "gallery" ? "-translate-x-1/2" : "translate-x-0"}`}
+          className={`flex h-full w-[200%] transition-transform duration-300 ease-out ${view === "gallery" ? "-translate-x-1/2" : "translate-x-0"}`}
         >
-          {/* Playground */}
-          <div className="w-1/2 flex flex-col md:border-r-[3px] border-ink min-h-0">
+          <div className="w-1/2 flex flex-col min-h-0">
             <PlaygroundPanel employee={employee} />
           </div>
-          {/* Gallery */}
-          <div className="w-1/2 flex flex-col bg-white/40 min-h-0">
+          <div className="w-1/2 flex flex-col min-h-0">
             <GalleryPanel employeeId={employee.id} />
           </div>
         </div>

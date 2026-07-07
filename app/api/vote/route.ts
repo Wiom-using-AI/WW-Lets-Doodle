@@ -27,18 +27,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "You cannot vote for your own doodle." }, { status: 403 });
   }
 
-  // Remove existing vote at this rank (replace it)
-  await prisma.vote.deleteMany({
-    where: { voterId: employee.id, rank },
+  // Toggle off: tapping the medal this doodle already holds removes it (un-pick).
+  const existing = await prisma.vote.findUnique({
+    where: { voterId_doodleId: { voterId: employee.id, doodleId } },
   });
-  // Remove existing vote for this doodle (replace it)
-  await prisma.vote.deleteMany({
-    where: { voterId: employee.id, doodleId },
-  });
+  if (existing && existing.rank === rank) {
+    await prisma.vote.delete({ where: { id: existing.id } });
+    return NextResponse.json({ ok: true, removed: true });
+  }
 
-  await prisma.vote.create({
-    data: { voterId: employee.id, doodleId, rank },
-  });
+  // Otherwise assign this medal to this doodle: free the medal from wherever it was,
+  // and clear any other medal this doodle held. Each medal + each doodle is used once.
+  await prisma.vote.deleteMany({ where: { voterId: employee.id, rank } });
+  await prisma.vote.deleteMany({ where: { voterId: employee.id, doodleId } });
+  await prisma.vote.create({ data: { voterId: employee.id, doodleId, rank } });
 
   return NextResponse.json({ ok: true });
 }

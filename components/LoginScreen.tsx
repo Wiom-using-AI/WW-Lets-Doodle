@@ -95,7 +95,12 @@ export default function LoginScreen() {
                 <p className="text-ink font-bold text-lg">Hi {name}! 👋</p>
                 {devMode
                   ? <p className="text-ink text-xs font-mono bg-crayon-yellow rounded-lg px-2 py-1 border-2 border-ink inline-block">🛠 DEV MODE — code auto-filled</p>
-                  : <p className="text-ink/60 text-sm">Check your Slack DMs for a 6-digit code</p>}
+                  : (
+                    <div className="bg-crayon-purple/15 border-[3px] border-crayon-purple rounded-2xl px-4 py-3 text-center shadow-doodle-sm">
+                      <p className="font-body font-bold text-ink text-base">📩 Check your <span className="text-crayon-purple">Slack DMs</span></p>
+                      <p className="text-ink/70 text-xs mt-0.5">We just sent your 6-digit code there</p>
+                    </div>
+                  )}
               </div>
               <div className="space-y-1.5">
                 <label className="text-ink font-semibold text-sm">Enter your code</label>
