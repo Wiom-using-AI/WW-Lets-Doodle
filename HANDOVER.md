@@ -58,6 +58,9 @@ Cloudflare Worker reverse-proxy (in `cloudflare-worker/`) · Slack Web API for O
   (Logged-in / Played / Voted lists, each downloadable as Excel), **Reset Data** (wipe all, type-to-confirm),
   and **per-employee submission removal** (in the leaderboard → expand a row → "Remove … submission — let them play again";
   deletes that employee's session + doodles + votes on them, keeps the employee so they can redraw).
+  **Submissions export** (in Data & Exports): "⬇ Excel (name · dept · prompt · points)" and "⬇ Doodles gallery
+  (HTML with images)" — a self-contained HTML file of every doodle + drawer name/dept/prompt/points. Admin-only,
+  works after the event closes (the /admin page is gated only by admin login, not event status).
 - **Results screen:** shown when the event is closed (status `completed`) — top 3 winners + all submissions.
 - **Live TV wall (`/wall`):** public, no-login office-TV display, **light mode**. Extra-bold "THE DOODLE
   SHOWDOWN!" heading (top-left) + big **blinking LIVE** badge + Wiom logo (top-right) + fixed QR sidebar.

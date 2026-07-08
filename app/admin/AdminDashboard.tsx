@@ -17,15 +17,17 @@ type LeaderboardEntry = {
 };
 
 type Row = Record<string, string | number>;
+type Submission = { name: string; email: string; department: string; prompt: string; points: number; submittedAt: string; imageData: string };
 
 export default function AdminDashboard({
-  event, stats, prompts, leaderboard, data,
+  event, stats, prompts, leaderboard, data, submissions,
 }: {
   event: { id: string; status: string };
   stats: { employeeCount: number; promptCount: number; doodleCount: number };
   prompts: Prompt[];
   leaderboard: LeaderboardEntry[];
   data: { logins: Row[]; played: Row[]; voted: Row[] };
+  submissions: Submission[];
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -99,6 +101,37 @@ export default function AdminDashboard({
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Data");
     XLSX.writeFile(wb, filename);
+  }
+
+  function downloadSubmissionsExcel() {
+    const rows = submissions.map((s, i) => ({ "#": i + 1, Name: s.name, Email: s.email, Department: s.department, Prompt: s.prompt, Points: s.points, "Submitted at": s.submittedAt }));
+    downloadXlsx(rows, "doodle-submissions.xlsx");
+  }
+
+  // Self-contained HTML gallery of every submission (image + name/dept/prompt/points) — open & print/save to keep.
+  function downloadSubmissionsGallery() {
+    const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
+    const cards = submissions.map((s, i) => `
+      <div class="c">
+        <img src="${s.imageData}" alt="doodle"/>
+        <div class="m">
+          <div class="n">${i + 1}. ${esc(s.name)}</div>
+          <div class="d">${esc(s.department)}</div>
+          <div class="p">🎯 ${esc(s.prompt)}</div>
+          <div class="pt">★ ${s.points} pts</div>
+        </div>
+      </div>`).join("");
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Let's Doodle It! — Submissions</title>
+      <style>body{font-family:system-ui,sans-serif;background:#fdf7e9;margin:0;padding:24px;color:#2b2b3a}
+      h1{text-align:center}.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;max-width:1100px;margin:0 auto}
+      .c{background:#fff;border:2px solid #2b2b3a;border-radius:14px;overflow:hidden}
+      .c img{width:100%;height:200px;object-fit:contain;background:#fff;border-bottom:2px solid #2b2b3a}
+      .m{padding:10px}.n{font-weight:700}.d{font-size:12px;color:#666}.p{font-size:13px;margin-top:4px}.pt{font-size:12px;color:#b45309;font-weight:700;margin-top:2px}
+      @media print{body{background:#fff}}</style></head>
+      <body><h1>Let's Doodle It! — Submissions (${submissions.length})</h1><div class="g">${cards}</div></body></html>`;
+    const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+    const a = document.createElement("a"); a.href = url; a.download = "doodle-submissions.html"; a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function uploadFile_() {
@@ -252,7 +285,21 @@ export default function AdminDashboard({
       {/* Data & exports */}
       <div className="card p-5 space-y-3">
         <h2 className="font-bold text-ink/70">Data &amp; Exports</h2>
-        <p className="text-xs text-ink/40">For your records — download as Excel. (Submissions are viewable in the leaderboard above.)</p>
+        <p className="text-xs text-ink/40">For your records. Available anytime, including after the event closes.</p>
+
+        {/* Submissions — name, department, prompt, points + the doodles themselves */}
+        <div className="bg-crayon-yellow/25 border-2 border-ink/15 rounded-xl p-3 space-y-2">
+          <div className="flex items-baseline justify-between">
+            <span className="font-semibold text-sm text-ink">🖼️ Submissions</span>
+            <span className="text-2xl font-hand font-bold text-crayon-pink">{submissions.length}</span>
+          </div>
+          <p className="text-xs text-ink/60">Each with employee name, department &amp; their prompt.</p>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button onClick={downloadSubmissionsExcel} disabled={submissions.length === 0} className="btn-secondary text-xs flex-1 disabled:opacity-40">⬇ Excel (name · dept · prompt · points)</button>
+            <button onClick={downloadSubmissionsGallery} disabled={submissions.length === 0} className="btn-secondary text-xs flex-1 disabled:opacity-40">⬇ Doodles gallery (HTML — with images)</button>
+          </div>
+        </div>
+
         <div className="grid sm:grid-cols-3 gap-3">
           {([["👤 Logged in", data.logins, "logins.xlsx"], ["🎨 Played", data.played, "played.xlsx"], ["🗳️ Voted", data.voted, "voted.xlsx"]] as [string, Row[], string][]).map(([title, rows, file]) => (
             <div key={title} className="bg-black/5 rounded-xl p-3 space-y-2">

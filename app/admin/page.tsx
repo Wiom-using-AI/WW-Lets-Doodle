@@ -32,7 +32,7 @@ export default async function AdminPage() {
       id: d.id,
       employeeId: d.session.employee.id,
       imageData: d.imageData,
-      prompt: promptMap[d.promptId] ?? "",
+      prompt: d.promptPhrase || promptMap[d.promptId] || "",
       submitter: { name: d.session.employee.name, department: d.session.employee.department },
       points: d.votes.reduce((s, v) => s + (4 - v.rank), 0),
       voteCount: d.votes.length,
@@ -64,6 +64,19 @@ export default async function AdminPage() {
   }
   const votedRows = Array.from(voterMap.values()).sort((a, b) => b.Votes - a.Votes);
 
+  // Submissions (admin-only record) — name, dept, prompt, points + the doodle image.
+  const submissions = submitted
+    .map((d) => ({
+      name: d.session.employee.name,
+      email: d.session.employee.email,
+      department: d.session.employee.department,
+      prompt: d.promptPhrase || promptMap[d.promptId] || "",
+      points: d.votes.reduce((s, v) => s + (4 - v.rank), 0),
+      submittedAt: fmt(d.createdAt),
+      imageData: d.imageData,
+    }))
+    .sort((a, b) => b.points - a.points);
+
   return (
     <AdminDashboard
       event={event}
@@ -71,6 +84,7 @@ export default async function AdminPage() {
       prompts={prompts}
       leaderboard={leaderboard}
       data={{ logins: loginRows, played: playedRows, voted: votedRows }}
+      submissions={submissions}
     />
   );
 }
