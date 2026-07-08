@@ -41,15 +41,19 @@ export default function SplitScreen({ employee }: { employee: Employee }) {
       <div className="flex border-b-[3px] border-ink bg-white shrink-0">
         <button
           onClick={() => setGalleryOpen(false)}
-          className={`flex-1 py-3 text-sm font-bold transition-colors ${!galleryOpen ? "text-crayon-purple border-b-4 border-crayon-purple" : "text-ink/40"}`}
+          className={`flex-1 py-2.5 flex justify-center transition-colors ${!galleryOpen ? "border-b-4 border-crayon-purple" : "border-b-4 border-transparent"}`}
         >
-          🖌 Playground
+          <span className={`inline-flex items-center gap-1.5 font-hand font-bold text-base sm:text-lg whitespace-nowrap px-3 py-1 rounded-xl border-2 transition-all ${!galleryOpen ? "bg-crayon-purple text-white border-ink shadow-doodle-sm" : "bg-crayon-yellow text-ink border-ink/70"}`}>
+            🖌 Playground
+          </span>
         </button>
         <button
           onClick={() => setGalleryOpen(true)}
-          className={`flex-1 py-3 text-sm font-bold transition-colors ${galleryOpen ? "text-crayon-pink border-b-4 border-crayon-pink" : "text-ink/40"}`}
+          className={`flex-1 py-2.5 flex justify-center transition-colors ${galleryOpen ? "border-b-4 border-crayon-pink" : "border-b-4 border-transparent"}`}
         >
-          🖼 Gallery
+          <span className={`inline-flex items-center gap-1.5 font-hand font-bold text-base sm:text-lg whitespace-nowrap px-3 py-1 rounded-xl border-2 transition-all ${galleryOpen ? "bg-crayon-pink text-white border-ink shadow-doodle-sm" : "bg-crayon-yellow text-ink border-ink/70"}`}>
+            🖼 Submission Gallery
+          </span>
         </button>
       </div>
 

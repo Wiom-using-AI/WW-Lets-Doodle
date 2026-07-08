@@ -73,7 +73,7 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
   const finalizedCount = (state?.doodles ?? []).filter((d) => d.finalized).length;
 
   function deadlineMs(): number {
-    if (!state?.tryStartedAt) return Date.now() + (state?.tryDurationMs ?? 300_000);
+    if (!state?.tryStartedAt) return Date.now() + (state?.tryDurationMs ?? 420_000);
     return Date.parse(state.tryStartedAt) + state.tryDurationMs - clockOffset.current;
   }
 
@@ -151,18 +151,17 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
 
   if (phase === "reveal") {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-6">
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center p-6 text-center gap-5 overflow-hidden">
         {isLast && (
-          <div className="chip bg-crayon-red text-white wobble-r">⚠️ This is your last chance!</div>
+          <div className="chip bg-crayon-red text-white wobble-r shrink-0">⚠️ This is your last chance!</div>
         )}
-        <div className="space-y-3">
+        <div className="space-y-3 shrink-0">
           <p className="text-ink/50 text-sm uppercase tracking-widest font-body font-semibold">Try {currentTry} of 3 — Your prompt is</p>
           <div className="card p-6 wobble-l">
             <h2 className="text-3xl font-hand font-bold text-crayon-purple leading-tight">{prompt}</h2>
           </div>
         </div>
-        <p className="text-ink/60 text-sm font-body max-w-xs">You have 5 minutes. The timer keeps running even if you leave — so start when ready!</p>
-        <button onClick={startDrawing} className="btn-primary text-lg px-10 py-4">Start Drawing →</button>
+        <ThinkCountdown key={currentTry} onStart={startDrawing} />
       </div>
     );
   }
@@ -184,26 +183,26 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
   if (phase === "confirm") {
     const img = currentImage();
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-5">
-        <h2 className="text-3xl font-hand font-bold text-crayon-purple">How&apos;s your doodle?</h2>
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center p-4 gap-3 overflow-hidden">
+        <h2 className="text-2xl sm:text-3xl font-hand font-bold text-crayon-purple shrink-0">How&apos;s your doodle?</h2>
         {img && (
-          <div className="card p-3 w-full max-w-xs wobble-l">
-            <img src={img} alt="Your doodle" className="w-full rounded-xl border-2 border-ink" />
+          <div className="card p-2 flex-1 min-h-0 flex items-center justify-center w-full max-w-xs wobble-l">
+            <img src={img} alt="Your doodle" className="max-h-full max-w-full w-auto object-contain rounded-xl border-2 border-ink" />
           </div>
         )}
-        <p className="text-ink/60 text-sm text-center font-body">
+        <p className="text-ink/60 text-sm text-center font-body shrink-0">
           Prompt: <span className="text-ink font-bold">{prompt}</span>
         </p>
-        <div className="flex gap-3 w-full max-w-xs">
+        <div className="flex gap-3 w-full max-w-xs shrink-0">
           {!isLast && <button onClick={handleRetry} className="btn-secondary flex-1">🎲 Next prompt</button>}
           <button onClick={() => handleSubmit(currentTry)} className="btn-primary flex-1">Finalise this one</button>
         </div>
         {finalizedCount >= 2 && (
-          <button onClick={handleKeep} className="btn-secondary w-full max-w-xs">🖼️ Compare all {finalizedCount} &amp; pick the best →</button>
+          <button onClick={handleKeep} className="btn-secondary w-full max-w-xs shrink-0">🖼️ Compare all {finalizedCount} &amp; pick the best →</button>
         )}
         {!isLast
-          ? <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">Get a new prompt ({3 - currentTry} left), finalise this one, or compare &amp; pick your best.</p>
-          : <p className="text-ink/50 text-xs font-body text-center max-w-[16rem]">Last prompt! Finalise this one, or compare all {finalizedCount} and pick your best.</p>}
+          ? <p className="text-ink/50 text-xs font-body text-center max-w-[16rem] shrink-0">Get a new prompt ({3 - currentTry} left), finalise this one, or compare &amp; pick your best.</p>
+          : <p className="text-ink/50 text-xs font-body text-center max-w-[16rem] shrink-0">Last prompt! Finalise this one, or compare all {finalizedCount} and pick your best.</p>}
       </div>
     );
   }
@@ -245,4 +244,45 @@ export default function DoodleGame({ onComplete }: { employee: Employee; onCompl
   }
 
   return null;
+}
+
+// 10-second "get creative" thinking window shown when a prompt is revealed. Highlighted + ticking;
+// when it reaches 0 it automatically starts the drawing (which anchors the 7-minute server timer).
+// Keyed by try number in the parent, so it remounts and restarts for each new prompt.
+function ThinkCountdown({ onStart }: { onStart: () => void }) {
+  const THINK_SECONDS = 15;
+  const [left, setLeft] = useState(THINK_SECONDS);
+  const onStartRef = useRef(onStart);
+  onStartRef.current = onStart;
+  const fired = useRef(false);
+
+  useEffect(() => {
+    const startedAt = Date.now();
+    const id = setInterval(() => {
+      const rem = Math.max(0, THINK_SECONDS - Math.floor((Date.now() - startedAt) / 1000));
+      setLeft(rem);
+      if (rem <= 0 && !fired.current) {
+        fired.current = true;
+        clearInterval(id);
+        onStartRef.current();
+      }
+    }, 200);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center gap-3 shrink-0">
+      <p className="font-body font-bold text-ink">🧠 Get creative! Think how you&apos;ll draw it…</p>
+      <div
+        className="w-24 h-24 rounded-full border-[5px] border-crayon-orange bg-crayon-yellow/40 shadow-doodle-sm flex items-center justify-center animate-pulse wobble-l"
+        role="timer"
+        aria-label={`${left} seconds to think`}
+      >
+        <span className="font-hand font-bold text-5xl text-crayon-orange tabular-nums leading-none">{left}</span>
+      </div>
+      <p className="text-ink/60 text-xs font-body max-w-[16rem]">
+        Drawing starts automatically when this hits 0 — then your <span className="font-bold text-ink">7-minute</span> timer begins.
+      </p>
+    </div>
+  );
 }

@@ -76,10 +76,16 @@ export default function DrawingCanvas({
   function restore(dataURL: string) {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
+    // Always repaint in normal mode — the eraser leaves the context in "destination-out",
+    // which would otherwise make drawImage erase the snapshot instead of restoring it.
+    ctx.globalCompositeOperation = "source-over";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!dataURL) return;
     const img = new Image();
-    img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    img.onload = () => {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
     img.src = dataURL;
   }
   function undo() { if (ptr.current <= 0) return; ptr.current--; restore(history.current[ptr.current]); syncButtons(); onAutosaveRef.current(history.current[ptr.current]); }
@@ -303,7 +309,7 @@ export default function DrawingCanvas({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 bg-white border-b-[3px] border-ink gap-2">
         <div className="min-w-0">
-          <div className="font-hand font-bold text-xl text-crayon-purple leading-none">Let&apos;s Doodle It! ✏️</div>
+          <div className="hidden md:block font-hand font-bold text-xl text-crayon-purple leading-none">Let&apos;s Doodle It! ✏️</div>
           <div className="text-xs text-ink/60 font-body truncate">Try {tryNumber} — <span className="text-ink font-semibold">{prompt}</span></div>
         </div>
         <div className="flex items-center gap-2 shrink-0">

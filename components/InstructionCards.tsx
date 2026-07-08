@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const CARDS = [
   { emoji: "🎯", title: "Your Mission", body: "You will receive 3 surprise prompts — one at a time. Each prompt is a phrase you need to draw." },
-  { emoji: "⏱️", title: "The Clock", body: "You have exactly 5 minutes per doodle. The canvas locks when time is up. Draw fast, draw fun!" },
+  { emoji: "⏱️", title: "The Clock", body: "You have exactly 7 minutes per doodle. The canvas locks when time is up. Draw fast, draw fun!" },
   { emoji: "🔁", title: "3 Tries", body: "After each doodle, you can retry and get a new surprise prompt — up to 3 times total. The 3rd is your last chance!" },
   { emoji: "🏆", title: "Pick Your Best", body: "After all 3 tries, preview all your doodles and pick the one you want to submit to the gallery." },
   { emoji: "🗳️", title: "Vote!", body: "Once submitted, vote for other doodles in the gallery. Rank your top 3 — 🥇 #1, 🥈 #2, 🥉 #3 — on different doodles. You cannot vote for your own." },

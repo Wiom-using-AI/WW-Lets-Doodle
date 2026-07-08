@@ -40,7 +40,7 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
         <div className="text-7xl wobble-l">🎉</div>
         <h2 className="text-4xl font-hand font-bold text-crayon-green">Doodle Submitted!</h2>
         <div className="card p-5 max-w-xs space-y-2">
-          <p className="text-ink/80 font-body">Your doodle is now live in the gallery! Tap the <span className="font-bold text-crayon-pink">Gallery</span> tab above to vote for your favourites.</p>
+          <p className="text-ink/80 font-body">Your doodle is now live in the gallery! Tap the <span className="font-bold text-crayon-pink">Submission Gallery</span> tab above to vote for your favourites.</p>
         </div>
         <p className="text-ink/50 text-sm font-body">Results will be announced soon after submissions close.</p>
       </div>
@@ -57,7 +57,7 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
 
   const stats: [string, string, string][] = [
     ["3", "Surprise Prompts", "text-crayon-purple"],
-    ["5 min", "Per Doodle", "text-crayon-blue"],
+    ["7 min", "Per Doodle", "text-crayon-blue"],
     ["1", "Submission", "text-crayon-pink"],
   ];
   return (
@@ -66,7 +66,7 @@ export default function PlaygroundPanel({ employee }: { employee: Employee }) {
         <div className="text-7xl animate-bounce">🖌️</div>
         <h2 className="text-4xl sm:text-5xl font-hand font-bold text-crayon-purple">Enter the Playground!</h2>
         <p className="text-ink/80 font-body font-semibold text-lg max-w-sm">
-          You&apos;ll get 3 surprise prompts. Draw each one in 5 minutes. Pick your best to submit!
+          You&apos;ll get 3 surprise prompts. Draw each one in 7 minutes. Pick your best to submit!
         </p>
       </div>
 

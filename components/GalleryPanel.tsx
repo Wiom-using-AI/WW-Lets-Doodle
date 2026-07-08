@@ -59,7 +59,7 @@ export default function GalleryPanel({ employeeId }: { employeeId: string }) {
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="px-5 py-4 border-b-[3px] border-ink bg-white text-center shrink-0">
-        <h2 className="font-hand font-bold text-3xl md:text-4xl text-crayon-pink leading-tight">🎨 Doodle Gallery</h2>
+        <h2 className="font-hand font-bold text-3xl md:text-4xl text-crayon-pink leading-tight">🎨 Submission Gallery</h2>
         <p className="text-base md:text-lg text-ink font-body font-bold mt-0.5">Browse everyone&apos;s doodles and rate your favourites! ⭐</p>
       </div>
 
