@@ -45,11 +45,12 @@ model GameSession {
 }
 
 model Doodle {
-  id          String   @id @default(cuid())
-  sessionId   String
-  tryNumber   Int
-  promptId    String
-  imageData   String   @db.Text
+  id           String   @id @default(cuid())
+  sessionId    String
+  tryNumber    Int
+  promptId     String
+  promptPhrase String   @default("") // denormalized topic — survives prompt-bank edits/deletes
+  imageData    String   @db.Text
   isSubmitted Boolean  @default(false)
   finalized   Boolean  @default(false) // this try's drawing is done (time-up or Done) — locked as the attempt
   createdAt   DateTime @default(now())

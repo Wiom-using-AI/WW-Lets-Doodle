@@ -25,6 +25,7 @@ export async function GET() {
       id: d.id,
       imageData: d.imageData,
       promptId: d.promptId,
+      promptPhrase: d.promptPhrase,
       prompt: "", // will enrich below
       employee: {
         id: d.session.employee.id,
@@ -42,5 +43,5 @@ export async function GET() {
   const prompts = await prisma.prompt.findMany({ where: { id: { in: promptIds } } });
   const promptMap = Object.fromEntries(prompts.map((p) => [p.id, p.phrase]));
 
-  return NextResponse.json(result.map((r) => ({ ...r, prompt: promptMap[r.promptId] ?? "" })));
+  return NextResponse.json(result.map((r) => ({ ...r, prompt: r.promptPhrase || promptMap[r.promptId] || "" })));
 }
